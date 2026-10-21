@@ -39,6 +39,17 @@ Outros comandos: `npm test`, `npm run lint`, `npm run build` e depois `npm start
 Para mudar de projeto Supabase sem perder nada: entra na app antiga, **Backup → Descarregar cópia**;
 depois entra na nova e **Backup → Restaurar**.
 
+## Publicar
+
+A app está em **https://memorias-tau.vercel.app** (Vercel, plano gratuito). Para publicar uma versão nova:
+
+```sh
+NITRO_PRESET=vercel npm run build
+npx vercel deploy --prebuilt --prod
+```
+
+As variáveis de produção (`VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `GEMINI_API_KEY`) estão guardadas no projeto da Vercel.
+
 ## IA (opcional)
 
 Para textos e sugestões de melhor qualidade, junta uma destas chaves ao `.env`:

@@ -12,4 +12,5 @@
 - UI text is European Portuguese and addresses the person as "tu"; headings use sentence case. Use `plural()` from src/lib/utils.ts for counts.
 - Exchange rates in src/lib/currency.ts are fixed approximations, labelled as such in the UI.
 - The app is installable via public/manifest.webmanifest only (no service worker / offline).
+- Hosting: Vercel project `memorias` → https://memorias-tau.vercel.app (Supabase auth site_url points there; localhost:8080 stays allowed). Deploy by hand: `NITRO_PRESET=vercel npm run build` then `npx vercel deploy --prebuilt --prod`. Production env vars live in Vercel (VITE_SUPABASE_*, GEMINI_API_KEY).
 - Checks: `npm test`, `npm run lint`, `npx tsc --noEmit`, `npm run build`.
