@@ -128,17 +128,6 @@ body {
   print-color-adjust: exact;
 }
 @media print {
-  .album-book {
-    zoom: 1 !important;
-  }
-  .album-sheet {
-    break-after: page;
-    page-break-after: always;
-  }
-  .album-sheet:last-child {
-    break-after: auto;
-    page-break-after: auto;
-  }
   [data-sonner-toaster] {
     display: none !important;
   }

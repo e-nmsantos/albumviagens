@@ -111,13 +111,19 @@ function drawScaled(img: HTMLImageElement, max: number) {
   return c;
 }
 
-/** Shrinks a picked file to a JPEG no larger than `max` pixels on its longest side. */
-export async function resizeImage(src: File | string, max = 1600): Promise<Blob> {
+/**
+ * Shrinks a picked file to a JPEG of at most `maxSide` × `maxSide` pixels' worth of area.
+ * Limiting the area (not the longest side) keeps panoramas tall enough to print: 3000 × 3000
+ * covers a full 30 cm album page at about 250 dpi.
+ */
+export async function resizeImage(src: File | string, maxSide = 3000): Promise<Blob> {
   const url = typeof src === "string" ? src : URL.createObjectURL(src);
   try {
-    const c = drawScaled(await loadImage(url), max);
+    const img = await loadImage(url);
+    const byArea = Math.sqrt((maxSide * maxSide) / (img.width * img.height));
+    const c = drawScaled(img, Math.max(img.width, img.height) * Math.min(1, byArea));
     return await new Promise<Blob>((resolve, reject) =>
-      c.toBlob((b) => (b ? resolve(b) : reject(new Error("Imagem inválida"))), "image/jpeg", 0.82),
+      c.toBlob((b) => (b ? resolve(b) : reject(new Error("Imagem inválida"))), "image/jpeg", 0.88),
     );
   } finally {
     if (typeof src !== "string") URL.revokeObjectURL(url);
