@@ -11,6 +11,7 @@ const memory = (id: string, photos: string[]): Memory => ({
   title: "T",
   place: "Lisboa, Portugal",
   date: "2024-01-01",
+  date_precision: "day",
   text: "",
   photos,
   lat: null,

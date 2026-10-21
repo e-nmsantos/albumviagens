@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowDownUp } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
-import { byYear, formatDate, useMemories } from "@/lib/memories";
+import { byYear, memoryDate, useMemories } from "@/lib/memories";
 import { usePhotoUrls } from "@/lib/photos";
 
 export const Route = createFileRoute("/_authenticated/linha-do-tempo")({
@@ -67,7 +67,7 @@ function Timeline() {
                     )}
                     <div className="min-w-0 py-1">
                       <p className="text-xs uppercase tracking-widest text-muted-foreground">
-                        {formatDate(m.date)}
+                        {memoryDate(m)}
                       </p>
                       <p className="mt-1 font-display text-2xl leading-tight md:text-3xl">
                         {m.title}

@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactNode } from "react";
 import { THEMES, monthYear, type Page, type ThemeId } from "@/lib/album";
-import { countryOf, formatDate, totalKm, type Memory } from "@/lib/memories";
+import { countryOf, memoryDate, totalKm, type Memory } from "@/lib/memories";
 import { placeAndCountry } from "@/lib/countries";
 
 export type BookContext = {
@@ -101,7 +101,7 @@ function Caption({ m, ctx, className = "" }: { m: Memory; ctx: BookContext; clas
   const { place } = placeAndCountry(m.place);
   return (
     <p className={`text-[7pt] uppercase tracking-[0.25em] text-[color:var(--muted)] ${className}`}>
-      {place} · {formatDate(m.date)}
+      {place} · {memoryDate(m)}
     </p>
   );
 }
@@ -330,9 +330,7 @@ export function BookPage({ page, ctx, folio }: { page: Page; ctx: BookContext; f
         <>
           <Eyebrow>{placeAndCountry(x.place).place}</Eyebrow>
           <h2 className={`mt-[3mm] text-[24pt] leading-[1.05] ${t.display}`}>{x.title}</h2>
-          <p className="mt-[2mm] text-[10pt] italic text-[color:var(--muted)]">
-            {formatDate(x.date)}
-          </p>
+          <p className="mt-[2mm] text-[10pt] italic text-[color:var(--muted)]">{memoryDate(x)}</p>
           <Rule />
         </>
       );

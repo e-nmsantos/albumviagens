@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { SiteHeader } from "@/components/SiteHeader";
 import {
   countryOf,
-  formatDate,
+  memoryDate,
   onThisDay,
   tripNames,
   useMemories,
@@ -87,7 +87,7 @@ function Diary() {
               <p className="text-xs uppercase tracking-[0.3em] opacity-80">A mais recente</p>
               <p className="mt-1 font-display text-4xl leading-none md:text-6xl">{all[0].title}</p>
               <p className="mt-2 text-sm opacity-90">
-                {all[0].place} · {formatDate(all[0].date)}
+                {all[0].place} · {memoryDate(all[0])}
               </p>
             </div>
           </Link>
@@ -177,7 +177,7 @@ function Diary() {
                 )}
                 <h2 className="text-2xl leading-tight">{m.title}</h2>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  {m.place} · {formatDate(m.date)}
+                  {m.place} · {memoryDate(m)}
                 </p>
               </div>
             </Link>
@@ -237,6 +237,7 @@ function ImportLocal() {
           title: m.title,
           place: m.place,
           date: m.date,
+          date_precision: "day",
           text: m.text ?? "",
           photos,
           lat: m.lat ?? null,

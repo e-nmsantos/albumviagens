@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Lightbox } from "@/components/Lightbox";
 import { useAuth } from "@/hooks/use-auth";
-import { formatDate, useDeleteMemory, useMemories, useSaveMemory } from "@/lib/memories";
+import { memoryDate, useDeleteMemory, useMemories, useSaveMemory } from "@/lib/memories";
 import { usePhotoUrls } from "@/lib/photos";
 
 export const Route = createFileRoute("/_authenticated/memoria/$id")({
@@ -150,7 +150,7 @@ function Detail() {
         )}
         {m.trip && <p className="mt-8 text-xs uppercase tracking-[0.3em] text-forest">{m.trip}</p>}
         <p className="mt-2 text-xs uppercase tracking-[0.3em] text-primary">
-          {m.place} · {formatDate(m.date)}
+          {m.place} · {memoryDate(m)}
         </p>
         <h1 className="mt-3 text-5xl leading-tight md:text-6xl">{m.title}</h1>
         <p className="mt-6 whitespace-pre-line text-lg leading-relaxed">{m.text}</p>
@@ -177,7 +177,7 @@ function Detail() {
                   <Link to="/memoria/$id" params={{ id: x.id }} className="hover:text-primary">
                     {x.title}{" "}
                     <span className="text-sm text-muted-foreground">
-                      · {x.place} · {formatDate(x.date)}
+                      · {x.place} · {memoryDate(x)}
                     </span>
                   </Link>
                 </li>

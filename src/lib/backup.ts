@@ -69,7 +69,11 @@ export function parseBackup(json: unknown): Backup {
   return {
     version: Number(b.version) || 1,
     exported_at: String(b.exported_at ?? ""),
-    memories: memories.map((m) => ({ ...m, photos: Array.isArray(m.photos) ? m.photos : [] })),
+    memories: memories.map((m) => ({
+      ...m,
+      photos: Array.isArray(m.photos) ? m.photos : [],
+      date_precision: m.date_precision === "month" ? "month" : "day",
+    })),
     wishes: Array.isArray(b.wishes)
       ? b.wishes.filter((w): w is Wish => !!w && typeof w.place === "string")
       : [],

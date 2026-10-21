@@ -4,21 +4,28 @@ import { currentScope, isCloud, useAuth, type Scope } from "@/hooks/use-auth";
 import { cloudError } from "@/lib/cloud";
 import { localDB } from "@/lib/local-db";
 import { deletePhotos } from "@/lib/photos";
-import type { Memory, MemoryInput } from "@/lib/types";
+import type { DatePrecision, Memory, MemoryInput } from "@/lib/types";
 
 export type { Memory, MemoryInput };
 
 const byDateDesc = (a: Memory, b: Memory) => b.date.localeCompare(a.date);
 
+/** Memories saved before dates could be month-only are known to the day. */
+const normalize = (m: Memory): Memory => ({
+  ...m,
+  date_precision: m.date_precision === "month" ? "month" : "day",
+});
+
 export async function fetchMemories(scope: Scope): Promise<Memory[]> {
-  if (!isCloud(scope)) return (await localDB.getAll<Memory>("memories")).sort(byDateDesc);
+  if (!isCloud(scope))
+    return (await localDB.getAll<Memory>("memories")).map(normalize).sort(byDateDesc);
   const { data, error } = await supabase
     .from("memories")
     .select("*")
     .eq("user_id", scope)
     .order("date", { ascending: false });
   if (error) throw cloudError("abrir as memórias", error);
-  return data as Memory[];
+  return (data as Memory[]).map(normalize);
 }
 
 export const memoriesQuery = (scope: Scope) =>
@@ -33,6 +40,7 @@ const fields = (m: MemoryInput) => ({
   title: m.title,
   place: m.place,
   date: m.date,
+  date_precision: m.date_precision,
   text: m.text,
   photos: m.photos,
   lat: m.lat,
@@ -55,7 +63,7 @@ export async function saveMemoryTo(scope: Scope, m: MemoryInput, create = !m.id)
     : supabase.from("memories").update(fields(m)).eq("id", m.id!);
   const { data, error } = await q.select().single();
   if (error) throw cloudError("guardar a memória", error);
-  return data as Memory;
+  return normalize(data as Memory);
 }
 
 export function useSaveMemory() {
@@ -129,12 +137,33 @@ export function totalKm(ms: Located[]) {
   return Math.round(km);
 }
 
-/** Memories from the same day and month in earlier years. */
-export function onThisDay<T extends { date: string }>(ms: T[], today = new Date()) {
+/** Memories from the same day and month in earlier years (only those whose day is known). */
+export function onThisDay<T extends { date: string; date_precision?: DatePrecision }>(
+  ms: T[],
+  today = new Date(),
+) {
   const md = `${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
   return ms.filter(
-    (m) => m.date.slice(5) === md && Number(m.date.slice(0, 4)) < today.getFullYear(),
+    (m) =>
+      m.date_precision !== "month" &&
+      m.date.slice(5) === md &&
+      Number(m.date.slice(0, 4)) < today.getFullYear(),
   );
+}
+
+/** Last day of a month, as YYYY-MM-DD (month is 1–12). */
+export function monthEnd(year: number, month: number) {
+  const day = new Date(year, month, 0).getDate();
+  return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+}
+
+/** A memory's date as people read it: "12 de junho de 2025", or "junho de 2025" without a day. */
+export function memoryDate(m: { date: string; date_precision?: DatePrecision }) {
+  if (m.date_precision !== "month") return formatDate(m.date);
+  return new Date(m.date + "T12:00:00").toLocaleDateString("pt-PT", {
+    month: "long",
+    year: "numeric",
+  });
 }
 
 /** Group memories by year; `newestFirst` orders both the years and the memories inside them. */

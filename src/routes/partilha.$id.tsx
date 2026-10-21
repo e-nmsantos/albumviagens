@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { Lightbox } from "@/components/Lightbox";
-import { formatDate, type Memory } from "@/lib/memories";
+import { memoryDate, type Memory } from "@/lib/memories";
 import { usePhotoUrls } from "@/lib/photos";
 
 export const Route = createFileRoute("/partilha/$id")({
@@ -30,14 +30,14 @@ function Shared() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("memories")
-        .select("id,title,place,date,text,photos,trip")
+        .select("id,title,place,date,date_precision,text,photos,trip")
         .eq("id", id)
         .eq("is_public", true)
         .maybeSingle();
       if (error) throw error;
       return data as Pick<
         Memory,
-        "id" | "title" | "place" | "date" | "text" | "photos" | "trip"
+        "id" | "title" | "place" | "date" | "date_precision" | "text" | "photos" | "trip"
       > | null;
     },
   });
@@ -69,7 +69,7 @@ function Shared() {
               <p className="mt-8 text-xs uppercase tracking-[0.3em] text-forest">{m.trip}</p>
             )}
             <p className="mt-2 text-xs uppercase tracking-[0.3em] text-primary">
-              {m.place} · {formatDate(m.date)}
+              {m.place} · {memoryDate(m)}
             </p>
             <h1 className="mt-3 text-5xl leading-tight md:text-6xl">{m.title}</h1>
             <p className="mt-6 whitespace-pre-line text-lg leading-relaxed">{m.text}</p>

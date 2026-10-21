@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import type * as LType from "leaflet";
 import { escapeHtml } from "@/lib/html";
+import { memoryDate } from "@/lib/memories";
+import type { DatePrecision } from "@/lib/types";
 
 type Pin = {
   id: string;
   title: string;
   date: string;
+  date_precision?: DatePrecision;
   lat: number | null;
   lng: number | null;
   trip: string | null;
@@ -89,7 +92,7 @@ export function MemoryMap({
 
         // Invalidate map size after render to prevent layout glitches
         setTimeout(() => {
-          map.invalidateSize();
+          if (mapRef.current === map) map.invalidateSize();
         }, 250);
 
         setReady(true);
@@ -101,6 +104,8 @@ export function MemoryMap({
     return () => {
       isMounted = false;
       if (mapRef.current) {
+        // Stop any pan/zoom in progress, or Leaflet errors when the page changes mid-animation.
+        mapRef.current.stop();
         mapRef.current.remove();
         mapRef.current = null;
       }
@@ -137,7 +142,7 @@ export function MemoryMap({
       });
 
       marker.bindPopup(
-        `<strong>${escapeHtml(m.title)}</strong><br/><small>${escapeHtml(m.date)}</small>`,
+        `<strong>${escapeHtml(m.title)}</strong><br/><small>${escapeHtml(/^\d{4}-\d{2}-\d{2}$/.test(m.date) ? memoryDate(m) : m.date)}</small>`,
       );
       marker.on("click", () => {
         if (onSelect) onSelect(m.id);
@@ -203,15 +208,15 @@ export function MemoryMap({
       pickedMarker.bindPopup("Lugar selecionado");
       pickedMarker.addTo(group);
 
-      map.panTo(pickedLatLng);
+      map.panTo(pickedLatLng, { animate: false });
     }
 
     // Adjust zoom / bounds
     if (bounds.isValid()) {
       if (bounds.getNorthEast().equals(bounds.getSouthWest())) {
-        map.setView(bounds.getCenter(), 8);
+        map.setView(bounds.getCenter(), 8, { animate: false });
       } else {
-        map.fitBounds(bounds, { padding: [50, 50], maxZoom: 12 });
+        map.fitBounds(bounds, { padding: [50, 50], maxZoom: 12, animate: false });
       }
     }
   }, [ready, memories, wishes, picked, showRoutes]);

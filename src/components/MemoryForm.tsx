@@ -4,7 +4,15 @@ import { toast } from "sonner";
 import { MemoryMap } from "@/components/MemoryMap";
 import { geocodePlace, type LatLng } from "@/lib/geocode";
 import { writeStory } from "@/lib/ai.functions";
-import { tripNames, useMemories, useSaveMemory, type Memory } from "@/lib/memories";
+import {
+  memoryDate,
+  monthEnd,
+  tripNames,
+  useMemories,
+  useSaveMemory,
+  type Memory,
+} from "@/lib/memories";
+import { toIsoDay } from "@/lib/dates";
 import {
   deletePhotos,
   resizeImage,
@@ -13,6 +21,21 @@ import {
   usePhotoUrls,
 } from "@/lib/photos";
 import { errorMessage } from "@/lib/errors";
+
+const MONTHS = [
+  "janeiro",
+  "fevereiro",
+  "março",
+  "abril",
+  "maio",
+  "junho",
+  "julho",
+  "agosto",
+  "setembro",
+  "outubro",
+  "novembro",
+  "dezembro",
+];
 
 const field =
   "mt-1 w-full rounded-md border border-input bg-card px-3 py-2 outline-none focus:ring-2 focus:ring-ring";
@@ -34,7 +57,21 @@ export function MemoryForm({
   const trips = tripNames(all);
   const [title, setTitle] = useState(initial?.title ?? "");
   const [place, setPlace] = useState(initial?.place ?? prefill?.place ?? "");
-  const [date, setDate] = useState(initial?.date ?? new Date().toISOString().slice(0, 10));
+  // When it happened: month and year are required, the day is optional.
+  const start = initial?.date ?? toIsoDay(new Date());
+  const [year, setYear] = useState(start.slice(0, 4));
+  const [month, setMonth] = useState(Number(start.slice(5, 7)));
+  const [day, setDay] = useState(
+    initial?.date_precision === "month" ? "" : String(Number(start.slice(8, 10))),
+  );
+  const daysInMonth = new Date(Number(year) || 2000, month, 0).getDate();
+  const validYear = /^\d{4}$/.test(year);
+  const date = !validYear
+    ? ""
+    : day
+      ? `${year}-${String(month).padStart(2, "0")}-${day.padStart(2, "0")}`
+      : monthEnd(Number(year), month);
+  const precision = day ? "day" : "month";
   const [text, setText] = useState(initial?.text ?? "");
   const [trip, setTrip] = useState(initial?.trip ?? "");
   const [photos, setPhotos] = useState<string[]>(initial?.photos ?? []);
@@ -68,7 +105,13 @@ export function MemoryForm({
         if (url) thumbs.push(await thumbnailDataUrl(url).catch(() => ""));
       }
       const r = await writeStory({
-        data: { title, place, date, notes: text, photos: thumbs.filter(Boolean) },
+        data: {
+          title,
+          place,
+          date: date ? memoryDate({ date, date_precision: precision }) : "",
+          notes: text,
+          photos: thumbs.filter(Boolean),
+        },
       });
       setText(r.text);
       if (r.source === "ai") toast.success("Texto escrito — ajusta-o à tua maneira.");
@@ -121,6 +164,7 @@ export function MemoryForm({
         title: title.trim(),
         place: place.trim(),
         date,
+        date_precision: precision,
         text,
         photos,
         trip: trip.trim() || null,
@@ -154,29 +198,68 @@ export function MemoryForm({
             placeholder="Pôr do sol em Sintra"
           />
         </label>
-        <div className="grid grid-cols-2 gap-4">
-          <label className="block text-sm">
-            Lugar
-            <input
-              required
-              value={place}
-              onChange={(e) => setPlace(e.target.value)}
-              onBlur={() => void locate()}
-              className={field}
-              placeholder="Sintra, Portugal"
-            />
-          </label>
-          <label className="block text-sm">
-            Data
-            <input
-              required
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className={field}
-            />
-          </label>
-        </div>
+        <label className="block text-sm">
+          Lugar
+          <input
+            required
+            value={place}
+            onChange={(e) => setPlace(e.target.value)}
+            onBlur={() => void locate()}
+            className={field}
+            placeholder="Sintra, Portugal"
+          />
+        </label>
+        <fieldset>
+          <legend className="text-sm">
+            Quando foi? <span className="text-muted-foreground">(o dia é opcional)</span>
+          </legend>
+          <div className="grid grid-cols-[1.6fr_1fr_1fr] gap-3">
+            <label className="block text-xs text-muted-foreground">
+              Mês
+              <select
+                required
+                value={month}
+                onChange={(e) => {
+                  const m = Number(e.target.value);
+                  setMonth(m);
+                  const max = new Date(Number(year) || 2000, m, 0).getDate();
+                  if (Number(day) > max) setDay(String(max));
+                }}
+                className={field}
+              >
+                {MONTHS.map((name, i) => (
+                  <option key={name} value={i + 1}>
+                    {name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="block text-xs text-muted-foreground">
+              Ano
+              <input
+                required
+                inputMode="numeric"
+                pattern="\d{4}"
+                maxLength={4}
+                value={year}
+                onChange={(e) => setYear(e.target.value.replace(/\D/g, "").slice(0, 4))}
+                className={field}
+                aria-invalid={!validYear}
+              />
+            </label>
+            <label className="block text-xs text-muted-foreground">
+              Dia
+              <select value={day} onChange={(e) => setDay(e.target.value)} className={field}>
+                <option value="">—</option>
+                {Array.from({ length: daysInMonth }, (_, i) => (
+                  <option key={i + 1} value={i + 1}>
+                    {i + 1}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+        </fieldset>
         <label className="block text-sm">
           Viagem <span className="text-muted-foreground">(opcional — junta várias memórias)</span>
           <input

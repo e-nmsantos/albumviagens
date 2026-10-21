@@ -19,7 +19,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { useAuth } from "@/hooks/use-auth";
 import { statusLabel, tripDatesLabel, tripStatus } from "@/lib/dates";
 import { useTrips, type TripPlan } from "@/lib/trips";
-import { useMemories, countryOf, formatDate } from "@/lib/memories";
+import { useMemories, countryOf, memoryDate } from "@/lib/memories";
 import { usePhotoUrls } from "@/lib/photos";
 import { plural } from "@/lib/utils";
 
@@ -572,7 +572,7 @@ function HomePage() {
                     </div>
                     <div className="p-4">
                       <p className="text-[11px] font-medium text-primary">
-                        {countryOf(m.place)} · {formatDate(m.date)}
+                        {countryOf(m.place)} · {memoryDate(m)}
                       </p>
                       <h4 className="mt-1 font-serif text-base font-semibold text-foreground line-clamp-1 group-hover:text-primary transition-colors">
                         {m.title}

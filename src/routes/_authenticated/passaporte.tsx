@@ -7,7 +7,7 @@ import { Modal, ModalActions } from "@/components/planner/ui";
 import { input, label } from "@/components/planner/styles";
 import { countryCodeOf, placeAndCountry } from "@/lib/countries";
 import { errorMessage } from "@/lib/errors";
-import { formatDate, useMemories } from "@/lib/memories";
+import { memoryDate, useMemories } from "@/lib/memories";
 import { deletePhotos, resizeImage, uploadPhoto, usePhotoUrls } from "@/lib/photos";
 import { mrzLines, useProfile, type Profile } from "@/lib/profile";
 
@@ -64,7 +64,7 @@ function PassportPage() {
         seen.add(key);
         return true;
       })
-      .map((m) => ({ id: m.id, ...placeAndCountry(m.place), date: formatDate(m.date) }));
+      .map((m) => ({ id: m.id, ...placeAndCountry(m.place), date: memoryDate(m) }));
   }, [memories]);
 
   const countryCount = new Set(

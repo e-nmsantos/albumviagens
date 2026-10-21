@@ -1,12 +1,16 @@
 // Shared data shapes. The same shapes are stored in IndexedDB (local mode) and Supabase (cloud mode).
 
+export type DatePrecision = "day" | "month";
+
 export type Memory = {
   id: string;
   user_id: string;
   title: string;
   place: string;
-  /** ISO date, YYYY-MM-DD. */
+  /** ISO date, YYYY-MM-DD. With "month" precision it is the last day of that month. */
   date: string;
+  /** "day" when the exact day is known, "month" when only the month and year are. */
+  date_precision: DatePrecision;
   text: string;
   /** Photo keys: `local/<uuid>.jpg` in local mode, `<user_id>/<uuid>.jpg` in the cloud bucket. */
   photos: string[];

@@ -12,6 +12,7 @@ export type Database = {
         Row: {
           created_at: string;
           date: string;
+          date_precision: string;
           id: string;
           is_public: boolean;
           lat: number | null;
@@ -26,6 +27,7 @@ export type Database = {
         Insert: {
           created_at?: string;
           date: string;
+          date_precision?: string;
           id?: string;
           is_public?: boolean;
           lat?: number | null;
@@ -40,6 +42,7 @@ export type Database = {
         Update: {
           created_at?: string;
           date?: string;
+          date_precision?: string;
           id?: string;
           is_public?: boolean;
           lat?: number | null;
