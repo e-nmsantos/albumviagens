@@ -73,7 +73,7 @@ function Detail() {
   }
 
   async function remove() {
-    if (!confirm("Apagar esta memória e as suas fotos?")) return;
+    if (!confirm("Apagar esta memória e as fotos dela?")) return;
     await del.mutateAsync(m!).then(
       () => nav({ to: "/diario" }),
       () => undefined, // Shown by the global mutation error handler.

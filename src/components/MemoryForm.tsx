@@ -69,7 +69,7 @@ export function MemoryForm({
         data: { title, place, date, notes: text, photos: thumbs.filter(Boolean) },
       });
       setText(r.text);
-      if (r.source === "ai") toast.success("Texto escrito — ajuste à sua maneira.");
+      if (r.source === "ai") toast.success("Texto escrito — ajusta-o à tua maneira.");
       else toast("Nenhum serviço de IA respondeu; deixei um rascunho simples para completar.");
     } catch (e) {
       toast.error(errorMessage(e, "Não foi possível escrever o texto."));
@@ -205,7 +205,7 @@ export function MemoryForm({
             value={text}
             onChange={(e) => setText(e.target.value)}
             className={field}
-            placeholder="O que aconteceu, o que sentiu…"
+            placeholder="O que aconteceu, o que sentiste…"
           />
         </label>
         <p className="-mt-3 text-xs text-muted-foreground">
@@ -257,7 +257,7 @@ export function MemoryForm({
         <p className="text-sm">
           Onde foi?{" "}
           <span className="text-muted-foreground">
-            Escreva o lugar e ele aparece no mapa — ou toque no mapa para ajustar.
+            Escreve o lugar e ele aparece no mapa — ou toca no mapa para ajustar.
           </span>
         </p>
         <div className="polaroid mt-2">

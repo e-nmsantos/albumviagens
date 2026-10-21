@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase";
 import type { Json } from "@/lib/database.types";
 import { currentScope, isCloud, useAuth, type Scope } from "@/hooks/use-auth";
 import { cloudError } from "@/lib/cloud";
+import { compareTrips, isIsoDay, whenKey } from "@/lib/dates";
 import { localDB } from "@/lib/local-db";
 import type {
   ItineraryDay,
@@ -22,29 +23,36 @@ export function normalizeTrip(t: TripInput): TripPlan {
   return {
     id: t.id || shortId("trip"),
     title: t.title,
+    start_date: isIsoDay(t.start_date) ? t.start_date : "",
+    end_date:
+      isIsoDay(t.end_date) && isIsoDay(t.start_date) && t.end_date >= t.start_date
+        ? t.end_date
+        : "",
     dates: t.dates ?? "",
     destination: t.destination || t.title,
     notes: t.notes ?? "",
-    days: [...(t.days ?? [])].sort((a, b) => a.day_number - b.day_number),
+    days: [...(t.days ?? [])].sort(
+      (a, b) => a.day_number - b.day_number || (a.time ?? "").localeCompare(b.time ?? ""),
+    ),
     budget_limit: Number(t.budget_limit) || 0,
     expenses: t.expenses ?? [],
-    reservations: t.reservations ?? [],
+    reservations: [...(t.reservations ?? [])].sort((a, b) =>
+      whenKey(a.date_start).localeCompare(whenKey(b.date_start)),
+    ),
     packing_list: t.packing_list ?? [],
     created_at: t.created_at || new Date().toISOString(),
   };
 }
 
-const newestFirst = (a: TripPlan, b: TripPlan) => b.created_at.localeCompare(a.created_at);
-
 export async function fetchTrips(scope: Scope): Promise<TripPlan[]> {
   if (!isCloud(scope)) {
-    return (await localDB.getAll<TripInput>("trips")).map(normalizeTrip).sort(newestFirst);
+    return (await localDB.getAll<TripInput>("trips")).map(normalizeTrip).sort(compareTrips());
   }
   const { data, error } = await supabase.from("trips").select("id,data").eq("user_id", scope);
   if (error) throw cloudError("abrir o planeador", error);
   return data
     .map((r) => normalizeTrip({ ...(r.data as unknown as TripInput), id: r.id }))
-    .sort(newestFirst);
+    .sort(compareTrips());
 }
 
 async function fetchTrip(scope: Scope, id: string): Promise<TripPlan> {
@@ -122,10 +130,18 @@ export const tripOps = {
     ...t,
     days: [...t.days, { ...day, id: shortId("day") }],
   }),
+  updateDay: (id: string, fields: Omit<ItineraryDay, "id">) => (t: TripPlan) => ({
+    ...t,
+    days: t.days.map((d) => (d.id === id ? { ...fields, id } : d)),
+  }),
   removeDay: (id: string) => (t: TripPlan) => ({ ...t, days: t.days.filter((d) => d.id !== id) }),
   addExpense: (e: Omit<TripExpense, "id">) => (t: TripPlan) => ({
     ...t,
     expenses: [{ ...e, id: shortId("exp") }, ...t.expenses],
+  }),
+  updateExpense: (id: string, fields: Omit<TripExpense, "id">) => (t: TripPlan) => ({
+    ...t,
+    expenses: t.expenses.map((e) => (e.id === id ? { ...fields, id } : e)),
   }),
   removeExpense: (id: string) => (t: TripPlan) => ({
     ...t,
@@ -134,6 +150,10 @@ export const tripOps = {
   addReservation: (r: Omit<TripReservation, "id">) => (t: TripPlan) => ({
     ...t,
     reservations: [...t.reservations, { ...r, id: shortId("res") }],
+  }),
+  updateReservation: (id: string, fields: Omit<TripReservation, "id">) => (t: TripPlan) => ({
+    ...t,
+    reservations: t.reservations.map((r) => (r.id === id ? { ...fields, id } : r)),
   }),
   removeReservation: (id: string) => (t: TripPlan) => ({
     ...t,
@@ -151,6 +171,10 @@ export const tripOps = {
   togglePacking: (id: string) => (t: TripPlan) => ({
     ...t,
     packing_list: t.packing_list.map((i) => (i.id === id ? { ...i, packed: !i.packed } : i)),
+  }),
+  renamePacking: (id: string, name: string) => (t: TripPlan) => ({
+    ...t,
+    packing_list: t.packing_list.map((i) => (i.id === id ? { ...i, name } : i)),
   }),
   removePacking: (id: string) => (t: TripPlan) => ({
     ...t,

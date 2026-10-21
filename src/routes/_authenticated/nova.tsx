@@ -7,9 +7,9 @@ export const Route = createFileRoute("/_authenticated/nova")({
   head: () => ({
     meta: [
       { title: "Nova memória — Memórias" },
-      { name: "description", content: "Registe uma nova memória com fotos, texto e local." },
+      { name: "description", content: "Regista uma nova memória com fotos, texto e lugar." },
       { property: "og:title", content: "Nova memória — Memórias" },
-      { property: "og:description", content: "Registe uma nova memória de viagem." },
+      { property: "og:description", content: "Regista uma nova memória de viagem." },
     ],
   }),
   validateSearch: z.object({

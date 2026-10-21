@@ -11,14 +11,15 @@ import {
   useSaveMemory,
 } from "@/lib/memories";
 import { resizeImage, uploadPhoto, usePhotoUrls } from "@/lib/photos";
+import { plural } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/diario")({
   head: () => ({
     meta: [
       { title: "O meu diário — Memórias" },
-      { name: "description", content: "Todas as suas memórias de viagem num mosaico de fotos." },
+      { name: "description", content: "Todas as tuas memórias de viagem num mosaico de fotos." },
       { property: "og:title", content: "O meu diário — Memórias" },
-      { property: "og:description", content: "Todas as suas memórias de viagem." },
+      { property: "og:description", content: "Todas as tuas memórias de viagem." },
     ],
   }),
   component: Diary,
@@ -58,7 +59,8 @@ function Diary() {
       <SiteHeader />
       <section className="mx-auto max-w-6xl px-6 pb-8 pt-4">
         <p className="text-xs uppercase tracking-[0.3em] text-forest animate-in fade-in">
-          {all.length} memórias · {new Set(all.map((m) => countryOf(m.place))).size} países
+          {plural(all.length, "memória", "memórias")} ·{" "}
+          {plural(new Set(all.map((m) => countryOf(m.place))).size, "país", "países")}
         </p>
         <h1 className="mt-3 max-w-3xl text-5xl leading-[1.05] animate-in fade-in slide-in-from-bottom-3 duration-700 md:text-7xl">
           Os lugares que <em className="text-primary">ficaram</em> comigo.
@@ -139,7 +141,7 @@ function Diary() {
           <p className="py-20 text-center text-muted-foreground">
             Ainda sem memórias.{" "}
             <Link to="/nova" className="text-primary underline">
-              Crie a primeira
+              Cria a primeira
             </Link>
             .
           </p>

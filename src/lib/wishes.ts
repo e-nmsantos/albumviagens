@@ -44,6 +44,10 @@ export function useWishMutations() {
         saveWishTo(await currentScope(), { ...w, id: crypto.randomUUID(), done: false }),
       onSuccess: done,
     }),
+    edit: useMutation({
+      mutationFn: async (w: Wish) => saveWishTo(await currentScope(), w),
+      onSuccess: done,
+    }),
     toggle: useMutation({
       mutationFn: async (w: Wish) => saveWishTo(await currentScope(), { ...w, done: !w.done }),
       onSuccess: done,

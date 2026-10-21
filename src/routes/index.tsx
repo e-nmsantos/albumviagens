@@ -16,9 +16,11 @@ import {
 } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { useAuth } from "@/hooks/use-auth";
+import { statusLabel, tripDatesLabel, tripStatus } from "@/lib/dates";
 import { useTrips, type TripPlan } from "@/lib/trips";
 import { useMemories, countryOf, formatDate } from "@/lib/memories";
 import { usePhotoUrls } from "@/lib/photos";
+import { plural } from "@/lib/utils";
 
 const tripCover = (t: TripPlan) => t.days.find((d) => d.photo)?.photo;
 
@@ -26,11 +28,11 @@ export const Route = createFileRoute("/")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Memórias & Planeador — De Momentos a Planos" },
+      { title: "Memórias — diário e planeador de viagens" },
       {
         name: "description",
         content:
-          "O seu companheiro de viagens: crie roteiros dia a dia, organize ideias e guarde memórias fotográficas.",
+          "O teu companheiro de viagens: cria roteiros dia a dia, organiza ideias e guarda memórias com fotos.",
       },
     ],
   }),
@@ -60,18 +62,18 @@ function HomePage() {
             <div className="md:col-span-7">
               <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3.5 py-1 text-xs font-semibold text-primary">
                 <Sparkles className="h-3.5 w-3.5" />
-                <span>De Momentos a Planos · Viagens & Roteiros</span>
+                <span>De momentos a planos · viagens e roteiros</span>
               </div>
 
               <h1 className="mt-5 font-serif text-5xl font-normal leading-[1.08] tracking-tight text-foreground md:text-6xl lg:text-7xl">
-                O seu mundo, <br />
+                O teu mundo, <br />
                 <em className="italic text-primary font-serif">planeado</em> &{" "}
                 <em className="italic text-forest font-serif">recordado</em>.
               </h1>
 
               <p className="mt-5 max-w-xl text-lg text-muted-foreground leading-relaxed">
-                Transforme fotografias e ideias em roteiros dia a dia organizados, e guarde um
-                diário das histórias e lugares que marcaram a sua vida.
+                Transforma fotografias e ideias em roteiros dia a dia e guarda um diário das
+                histórias e dos lugares que marcaram a tua vida.
               </p>
 
               <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -80,7 +82,7 @@ function HomePage() {
                   className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:bg-primary/90 hover:scale-[1.02]"
                 >
                   <CalendarDays className="h-4 w-4" />
-                  <span>Abrir Planeador</span>
+                  <span>Abrir o planeador</span>
                   <ArrowRight className="h-4 w-4 ml-1" />
                 </Link>
 
@@ -89,7 +91,7 @@ function HomePage() {
                   className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-3 text-sm font-medium text-foreground transition-all hover:bg-accent hover:border-foreground/20"
                 >
                   <BookOpen className="h-4 w-4 text-muted-foreground" />
-                  <span>Ver Diário</span>
+                  <span>Ver o diário</span>
                 </Link>
 
                 <Link
@@ -97,7 +99,7 @@ function HomePage() {
                   className="inline-flex items-center gap-2 rounded-full border border-dashed border-primary/40 bg-primary/5 px-4 py-3 text-sm font-medium text-primary transition-all hover:bg-primary/10"
                 >
                   <Plus className="h-4 w-4" />
-                  <span>Nova Memória</span>
+                  <span>Nova memória</span>
                 </Link>
               </div>
 
@@ -107,19 +109,19 @@ function HomePage() {
                   <span className="block text-2xl font-bold text-foreground font-serif">
                     {trips.length}
                   </span>
-                  <span className="text-xs text-muted-foreground">Viagens Planeadas</span>
+                  <span className="text-xs text-muted-foreground">Viagens planeadas</span>
                 </div>
                 <div>
                   <span className="block text-2xl font-bold text-foreground font-serif">
                     {totalDaysPlanned}
                   </span>
-                  <span className="text-xs text-muted-foreground">Dias de Roteiro</span>
+                  <span className="text-xs text-muted-foreground">Paragens no roteiro</span>
                 </div>
                 <div>
                   <span className="block text-2xl font-bold text-foreground font-serif">
                     {memories.length}
                   </span>
-                  <span className="text-xs text-muted-foreground">Memórias no Diário</span>
+                  <span className="text-xs text-muted-foreground">Memórias no diário</span>
                 </div>
               </div>
             </div>
@@ -134,12 +136,12 @@ function HomePage() {
                 <div className="relative rounded-2xl border border-amber-200/80 bg-[#fffdf0] p-6 text-stone-800 shadow-xl dark:border-amber-900/40 dark:bg-stone-900 dark:text-stone-100 rotate-1 transition-transform hover:rotate-0 duration-300">
                   {/* Pin badge */}
                   <div className="absolute -top-3 left-8 flex items-center gap-1.5 rounded-full bg-amber-500/90 px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
-                    <span>📌 Trip Planner</span>
+                    <span>📌 Planeador</span>
                   </div>
 
                   <div className="mt-2 flex items-center justify-between border-b border-amber-200/60 pb-3 dark:border-stone-800">
                     <span className="font-serif text-2xl italic tracking-tight font-medium text-stone-900 dark:text-white">
-                      From moments to plans
+                      De momentos a planos
                     </span>
                     <span className="text-xs font-semibold text-amber-700 dark:text-amber-400 bg-amber-100 dark:bg-amber-950/60 px-2.5 py-1 rounded-full">
                       Tudo num só lugar
@@ -157,7 +159,7 @@ function HomePage() {
                     <li className="flex items-start gap-2.5">
                       <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-600 dark:text-emerald-400 mt-0.5" />
                       <span>
-                        <strong>Itinerário dia-a-dia</strong> com horários, notas e locais
+                        <strong>Itinerário dia a dia</strong> com horários, notas e locais
                       </span>
                     </li>
                     <li className="flex items-start gap-2.5">
@@ -177,11 +179,11 @@ function HomePage() {
                       <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-600 dark:text-emerald-400 mt-0.5" />
                       {user ? (
                         <span>
-                          <strong>Guardado na sua conta</strong>, disponível em qualquer dispositivo
+                          <strong>Guardado na tua conta</strong>, disponível em qualquer dispositivo
                         </span>
                       ) : (
                         <span>
-                          <strong>Guardado neste dispositivo</strong> — entre numa conta para usar a
+                          <strong>Guardado neste dispositivo</strong> — entra numa conta para usar a
                           nuvem
                         </span>
                       )}
@@ -196,7 +198,7 @@ function HomePage() {
                           {featured.title}
                         </span>
                         <span className="text-[11px] text-amber-700 dark:text-amber-400">
-                          {featured.days.length} paragens planeadas
+                          {plural(featured.days.length, "paragem planeada", "paragens planeadas")}
                         </span>
                       </div>
                       <div className="mt-2 flex gap-1.5 overflow-hidden text-[11px] text-stone-600 dark:text-stone-400">
@@ -235,17 +237,17 @@ function HomePage() {
           <div className="flex items-end justify-between">
             <div>
               <p className="text-xs uppercase tracking-[0.25em] text-primary font-semibold">
-                Itinerários & Roteiros
+                Itinerários e roteiros
               </p>
               <h2 className="mt-1 font-serif text-3xl font-medium tracking-tight text-foreground md:text-4xl">
-                As Suas Viagens Ativas
+                As tuas viagens
               </h2>
             </div>
             <Link
               to="/planeador"
               className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
             >
-              <span>Ver todas no Planeador</span>
+              <span>Ver todas no planeador</span>
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
@@ -270,9 +272,14 @@ function HomePage() {
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                     <div className="absolute bottom-3 left-4 right-4">
-                      {trip.dates && (
+                      {tripDatesLabel(trip) && (
                         <span className="inline-block rounded-md bg-black/40 px-2 py-0.5 text-[11px] font-medium text-white/90 backdrop-blur-sm">
-                          {trip.dates}
+                          {tripDatesLabel(trip)}
+                        </span>
+                      )}
+                      {statusLabel(tripStatus(trip)) && (
+                        <span className="ml-1.5 inline-block rounded-md bg-primary px-2 py-0.5 text-[11px] font-semibold text-primary-foreground">
+                          {statusLabel(tripStatus(trip))}
                         </span>
                       )}
                       <h3 className="mt-1 text-xl font-serif font-medium text-white drop-shadow-sm">
@@ -287,7 +294,7 @@ function HomePage() {
                         <MapPin className="h-3.5 w-3.5 text-primary" />
                         <span>{trip.destination}</span>
                         <span>·</span>
-                        <span>{days.length} paragens no roteiro</span>
+                        <span>{plural(days.length, "paragem", "paragens")}</span>
                       </div>
 
                       {/* Preview of first 2 days */}
@@ -307,7 +314,7 @@ function HomePage() {
                         ))}
                         {days.length > 2 && (
                           <p className="text-[11px] text-muted-foreground italic">
-                            + {days.length - 2} outros dias planeados...
+                            + {plural(days.length - 2, "outra paragem", "outras paragens")}…
                           </p>
                         )}
                       </div>
@@ -320,7 +327,7 @@ function HomePage() {
                         className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-secondary/80 py-2.5 text-xs font-semibold text-secondary-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
                       >
                         <CalendarDays className="h-3.5 w-3.5" />
-                        <span>Abrir Roteiro Completo</span>
+                        <span>Abrir o roteiro</span>
                       </Link>
                     </div>
                   </div>
@@ -337,13 +344,13 @@ function HomePage() {
                 <Plus className="h-6 w-6" />
               </div>
               <h3 className="mt-4 font-serif text-lg font-medium text-foreground">
-                Planear Nova Aventura
+                Planear uma nova viagem
               </h3>
               <p className="mt-1 max-w-xs text-xs text-muted-foreground">
-                Crie um novo itinerário dia a dia com horários, fotos, reservas e orçamento.
+                Cria um itinerário dia a dia com horários, fotos, reservas e orçamento.
               </p>
               <span className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-primary">
-                Começar no Planeador →
+                Começar no planeador →
               </span>
             </Link>
           </div>
@@ -353,10 +360,10 @@ function HomePage() {
         <section>
           <div>
             <p className="text-xs uppercase tracking-[0.25em] text-forest font-semibold">
-              Tudo o Que Precisa
+              Tudo o que precisas
             </p>
             <h2 className="mt-1 font-serif text-3xl font-medium tracking-tight text-foreground md:text-4xl">
-              Explorar a Sua Aplicação de Viagens
+              Explora a tua app de viagens
             </h2>
           </div>
 
@@ -371,15 +378,15 @@ function HomePage() {
                   <CalendarDays className="h-5 w-5" />
                 </div>
                 <h3 className="mt-4 font-serif text-xl font-medium text-foreground group-hover:text-primary transition-colors">
-                  Planeador & Roteiros
+                  Planeador e roteiros
                 </h3>
                 <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                  Organize viagens dia a dia com horários detalhados, fotografias de inspiração,
-                  notas e mapas do percurso.
+                  Organiza viagens dia a dia com horários, fotografias de inspiração, notas e mapas
+                  do percurso.
                 </p>
               </div>
               <span className="mt-5 inline-flex items-center gap-1 text-xs font-semibold text-primary">
-                Aceder ao Planeador →
+                Abrir o planeador →
               </span>
             </Link>
 
@@ -393,14 +400,14 @@ function HomePage() {
                   <BookOpen className="h-5 w-5" />
                 </div>
                 <h3 className="mt-4 font-serif text-xl font-medium text-foreground group-hover:text-primary transition-colors">
-                  Diário de Bordo
+                  Diário de bordo
                 </h3>
                 <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                  Todas as suas histórias e fotografias, com ajuda da IA para escrever o texto.
+                  Todas as tuas histórias e fotografias, com ajuda da IA para escrever o texto.
                 </p>
               </div>
               <span className="mt-5 inline-flex items-center gap-1 text-xs font-semibold text-primary">
-                Ver Diário →
+                Ver o diário →
               </span>
             </Link>
 
@@ -414,19 +421,19 @@ function HomePage() {
                   <Map className="h-5 w-5" />
                 </div>
                 <h3 className="mt-4 font-serif text-xl font-medium text-foreground group-hover:text-primary transition-colors">
-                  Mapa do Mundo
+                  Mapa do mundo
                 </h3>
                 <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                  Veja cada lugar marcado no mapa interativo, com o percurso de cada viagem e a
-                  lista de desejos.
+                  Cada lugar marcado no mapa interativo, com o percurso de cada viagem e a lista de
+                  desejos.
                 </p>
               </div>
               <span className="mt-5 inline-flex items-center gap-1 text-xs font-semibold text-primary">
-                Explorar Mapa →
+                Explorar o mapa →
               </span>
             </Link>
 
-            {/* Linha do Tempo */}
+            {/* Linha do tempo */}
             <Link
               to="/linha-do-tempo"
               className="group relative flex flex-col justify-between rounded-2xl border border-border bg-card p-6 shadow-sm transition-all hover:border-primary/50 hover:shadow-md"
@@ -436,19 +443,18 @@ function HomePage() {
                   <Clock className="h-5 w-5" />
                 </div>
                 <h3 className="mt-4 font-serif text-xl font-medium text-foreground group-hover:text-primary transition-colors">
-                  Linha do Tempo
+                  Linha do tempo
                 </h3>
                 <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                  Uma viagem cronológica pelas suas aventuras ano após ano, desde a primeira
-                  recordação até às mais recentes.
+                  As tuas aventuras ano após ano, desde a primeira recordação até às mais recentes.
                 </p>
               </div>
               <span className="mt-5 inline-flex items-center gap-1 text-xs font-semibold text-primary">
-                Ver Linha do Tempo →
+                Ver a linha do tempo →
               </span>
             </Link>
 
-            {/* Lista de Desejos */}
+            {/* Lista de desejos */}
             <Link
               to="/desejos"
               className="group relative flex flex-col justify-between rounded-2xl border border-border bg-card p-6 shadow-sm transition-all hover:border-primary/50 hover:shadow-md"
@@ -458,7 +464,7 @@ function HomePage() {
                   <Star className="h-5 w-5" />
                 </div>
                 <h3 className="mt-4 font-serif text-xl font-medium text-foreground group-hover:text-primary transition-colors">
-                  Lista de Desejos
+                  Lista de desejos
                 </h3>
                 <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
                   Os próximos destinos de sonho por realizar, notas de restaurantes, monumentos e
@@ -466,7 +472,7 @@ function HomePage() {
                 </p>
               </div>
               <span className="mt-5 inline-flex items-center gap-1 text-xs font-semibold text-primary">
-                Ver Desejos →
+                Ver os desejos →
               </span>
             </Link>
 
@@ -480,14 +486,14 @@ function HomePage() {
                   <Compass className="h-5 w-5" />
                 </div>
                 <h3 className="mt-4 font-serif text-xl font-medium text-foreground group-hover:text-primary transition-colors">
-                  Passaporte de Carimbos
+                  Passaporte de carimbos
                 </h3>
                 <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                  Uma caderneta com um carimbo por cada lugar onde guardou uma memória.
+                  Uma caderneta com um carimbo por cada lugar onde guardaste uma memória.
                 </p>
               </div>
               <span className="mt-5 inline-flex items-center gap-1 text-xs font-semibold text-primary">
-                Abrir Passaporte →
+                Abrir o passaporte →
               </span>
             </Link>
 
@@ -501,14 +507,14 @@ function HomePage() {
                   <BookImage className="h-5 w-5" />
                 </div>
                 <h3 className="mt-4 font-serif text-xl font-medium text-foreground group-hover:text-primary transition-colors">
-                  Álbum & Mosaico
+                  Álbum fotográfico
                 </h3>
                 <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
                   Um álbum fotográfico paginado, pronto a imprimir ou guardar em PDF.
                 </p>
               </div>
               <span className="mt-5 inline-flex items-center gap-1 text-xs font-semibold text-primary">
-                Ver Álbum →
+                Ver o álbum →
               </span>
             </Link>
           </div>
@@ -523,14 +529,16 @@ function HomePage() {
                   Recordações
                 </p>
                 <h2 className="mt-1 font-serif text-3xl font-medium tracking-tight text-foreground md:text-4xl">
-                  Do Seu Diário de Bordo
+                  Do teu diário de bordo
                 </h2>
               </div>
               <Link
                 to="/diario"
                 className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
               >
-                <span>Ver todas as {memories.length} memórias</span>
+                <span>
+                  {memories.length === 1 ? "Ver a memória" : `Ver as ${memories.length} memórias`}
+                </span>
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </div>

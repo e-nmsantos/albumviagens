@@ -12,10 +12,10 @@ export const Route = createFileRoute("/auth")({
       { title: "Entrar — Memórias" },
       {
         name: "description",
-        content: "Entre ou crie conta para guardar as suas memórias de viagem.",
+        content: "Entra ou cria conta para guardares as tuas memórias de viagem.",
       },
       { property: "og:title", content: "Entrar — Memórias" },
-      { property: "og:description", content: "Entre ou crie conta no seu diário de viagens." },
+      { property: "og:description", content: "Entra ou cria conta no teu diário de viagens." },
     ],
   }),
   component: AuthPage,
@@ -47,7 +47,7 @@ function AuthPage() {
       if (mode === "in") {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        toast.success("Bem-vindo de volta!");
+        toast.success("Olá outra vez!");
       } else if (mode === "up") {
         const { data, error } = await supabase.auth.signUp({
           email,
@@ -60,7 +60,7 @@ function AuthPage() {
           nav({ to: target as "/diario", replace: true });
         } else {
           setSent(
-            `Enviámos um email de confirmação para ${email}. Abra o link para ativar a sua conta.`,
+            `Enviámos um email de confirmação para ${email}. Abre o link para ativares a tua conta.`,
           );
         }
       } else {
@@ -88,9 +88,9 @@ function AuthPage() {
         <h1 className="text-center font-display text-5xl italic">Memórias</h1>
         <p className="mt-2 text-center text-muted-foreground">
           {mode === "in"
-            ? "Bem-vindo de volta."
+            ? "Olá outra vez."
             : mode === "up"
-              ? "Crie o seu diário de viagens."
+              ? "Cria o teu diário de viagens."
               : "Recuperar palavra-passe."}
         </p>
         {sent ? (
@@ -157,7 +157,7 @@ function AuthPage() {
                 className="w-full rounded-full bg-primary py-3 text-primary-foreground hover:opacity-90 disabled:opacity-50"
               >
                 {busy
-                  ? "Aguarde..."
+                  ? "Um momento…"
                   : mode === "in"
                     ? "Entrar"
                     : mode === "up"

@@ -51,7 +51,7 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
           Esta página encontrou um erro
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Ocorreu uma falha no carregamento deste ecrã. Pode tentar recarregar ou voltar ao início.
+          Ocorreu uma falha no carregamento deste ecrã. Podes tentar recarregar ou voltar ao início.
         </p>
         {errorMessage && (
           <div className="mt-4 rounded-lg bg-destructive/10 p-3 text-left text-xs font-mono text-destructive overflow-auto max-h-40">
@@ -66,13 +66,13 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
             }}
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
-            Tentar novamente
+            Tentar outra vez
           </button>
           <a
             href="/"
             className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
           >
-            Voltar ao Início
+            Voltar ao início
           </a>
         </div>
       </div>

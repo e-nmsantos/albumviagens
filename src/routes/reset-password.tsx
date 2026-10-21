@@ -7,9 +7,9 @@ export const Route = createFileRoute("/reset-password")({
   head: () => ({
     meta: [
       { title: "Nova palavra-passe — Memórias" },
-      { name: "description", content: "Escolha uma nova palavra-passe para o seu diário." },
+      { name: "description", content: "Escolhe uma nova palavra-passe para o teu diário." },
       { property: "og:title", content: "Nova palavra-passe — Memórias" },
-      { property: "og:description", content: "Escolha uma nova palavra-passe." },
+      { property: "og:description", content: "Escolhe uma nova palavra-passe." },
     ],
   }),
   component: Reset,

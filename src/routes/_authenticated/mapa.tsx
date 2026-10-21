@@ -3,6 +3,7 @@ import { useState } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { MemoryMap } from "@/components/MemoryMap";
 import { tripNames, useMemories } from "@/lib/memories";
+import { plural } from "@/lib/utils";
 import { useWishes } from "@/lib/wishes";
 
 export const Route = createFileRoute("/_authenticated/mapa")({
@@ -39,8 +40,9 @@ function MapPage() {
               O mapa das <em className="text-primary">memórias</em>
             </h1>
             <p className="mt-2 text-muted-foreground">
-              {count} lugares marcados. Toque num ponto para abrir a memória. As linhas mostram o
-              percurso de cada viagem; as estrelas verdes são lugares que quer visitar.
+              {plural(count, "lugar marcado", "lugares marcados")}. Toca num ponto para abrir a
+              memória. As linhas mostram o percurso de cada viagem; os pontos verdes são lugares que
+              queres visitar.
             </p>
             <label className="mt-3 inline-flex items-center gap-2 text-sm">
               <input

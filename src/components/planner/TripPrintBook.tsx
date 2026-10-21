@@ -1,3 +1,4 @@
+import { dateOfDay, formatWeekday, formatWhen, tripDatesLabel } from "@/lib/dates";
 import type { TripPlan } from "@/lib/trips";
 
 /** The trip as a printable booklet; only visible when printing. */
@@ -11,7 +12,7 @@ export function TripPrintBook({ trip, urls }: { trip: TripPlan; urls: Record<str
         <h1 className="mt-4 font-serif text-6xl italic">{trip.title}</h1>
         <p className="mt-3 font-serif text-lg text-stone-600">
           {trip.destination}
-          {trip.dates && ` · ${trip.dates}`}
+          {tripDatesLabel(trip) && ` · ${tripDatesLabel(trip)}`}
         </p>
       </div>
 
@@ -24,6 +25,8 @@ export function TripPrintBook({ trip, urls }: { trip: TripPlan; urls: Record<str
                 <div key={day.id} className="break-inside-avoid border-b border-stone-100 pb-6">
                   <span className="text-xs font-bold uppercase text-stone-400">
                     Dia {day.day_number}
+                    {dateOfDay(trip, day.day_number) &&
+                      ` · ${formatWeekday(dateOfDay(trip, day.day_number)!)}`}
                     {day.time && ` · ${day.time}`}
                   </span>
                   <h3 className="mt-1 font-serif text-2xl">{day.title}</h3>
@@ -52,8 +55,8 @@ export function TripPrintBook({ trip, urls }: { trip: TripPlan; urls: Record<str
                 <div key={r.id} className="break-inside-avoid rounded border border-stone-200 p-3">
                   <strong>{r.title}</strong>
                   <p>
-                    {r.date_start}
-                    {r.date_end && ` → ${r.date_end}`}
+                    {formatWhen(r.date_start)}
+                    {r.date_end && ` → ${formatWhen(r.date_end)}`}
                     {r.reference && ` · ${r.reference}`}
                   </p>
                   {r.location && <p>{r.location}</p>}

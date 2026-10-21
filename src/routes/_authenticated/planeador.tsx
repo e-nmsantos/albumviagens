@@ -28,6 +28,7 @@ import { TripDialog } from "@/components/planner/TripDialog";
 import { TripPrintBook } from "@/components/planner/TripPrintBook";
 import { EmptyState } from "@/components/planner/ui";
 import type { TripUpdate } from "@/components/planner/types";
+import { statusLabel, tripDatesLabel, tripStatus } from "@/lib/dates";
 import { deletePhotos, usePhotoUrls } from "@/lib/photos";
 import { tripPhotos, useTripMutations, useTrips, type TripPlan } from "@/lib/trips";
 
@@ -186,7 +187,12 @@ function TripPlannerPage() {
                 </div>
                 <p className="mt-2 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
                   <Calendar className="h-4 w-4 text-primary" />
-                  <span>{trip.dates || "Datas por definir"}</span>
+                  <span>{tripDatesLabel(trip) || "Datas por definir"}</span>
+                  {statusLabel(tripStatus(trip)) && (
+                    <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
+                      {statusLabel(tripStatus(trip))}
+                    </span>
+                  )}
                   <span className="text-muted-foreground/50">|</span>
                   <MapPin className="h-4 w-4 text-primary" />
                   <span>{trip.destination}</span>

@@ -98,6 +98,10 @@ export type PackingItem = {
 export type TripPlan = {
   id: string;
   title: string;
+  /** First and last day, ISO "YYYY-MM-DD", or "" when not set. */
+  start_date: string;
+  end_date: string;
+  /** Free-text dates from older versions; shown only when start_date is empty. */
   dates: string;
   destination: string;
   notes: string;

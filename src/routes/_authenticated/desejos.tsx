@@ -1,21 +1,27 @@
 import { createFileRoute, ClientOnly, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Check, Trash2, Star, CalendarDays, Plane, Undo2 } from "lucide-react";
+import { Check, Trash2, Star, CalendarDays, Pencil, Plane, Undo2 } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
+import { Modal, ModalActions } from "@/components/planner/ui";
+import { input as modalInput, label as modalLabel } from "@/components/planner/styles";
 import { MemoryMap } from "@/components/MemoryMap";
 import { Globe } from "@/components/Globe";
 import { geocodePlace } from "@/lib/geocode";
 import { countryOf, distanceKm, useMemories } from "@/lib/memories";
 import { useWishes, useWishMutations, type Wish } from "@/lib/wishes";
+import { plural } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/desejos")({
   head: () => ({
     meta: [
       { title: "Lista de desejos — Memórias" },
-      { name: "description", content: "Os lugares que quer visitar um dia, num globo e no mapa." },
+      {
+        name: "description",
+        content: "Os lugares que queres visitar um dia, num globo e no mapa.",
+      },
       { property: "og:title", content: "Lista de desejos — Memórias" },
-      { property: "og:description", content: "Os lugares que quer visitar um dia." },
+      { property: "og:description", content: "Os lugares que queres visitar um dia." },
     ],
   }),
   component: Wishes,
@@ -29,6 +35,7 @@ function Wishes() {
   const { data: wishes = [] } = useWishes();
   const { data: ms = [] } = useMemories();
   const { add, toggle, remove } = useWishMutations();
+  const [editing, setEditing] = useState<Wish | null>(null);
   const [place, setPlace] = useState("");
   const [note, setNote] = useState("");
   const [when, setWhen] = useState("");
@@ -96,7 +103,7 @@ function Wishes() {
           <div className="rounded-2xl bg-card p-5 shadow-sm">
             <div className="flex justify-between text-sm">
               <span>{open.length} por visitar</span>
-              <span className="text-forest">{done.length} cumpridos</span>
+              <span className="text-forest">{plural(done.length, "cumprido", "cumpridos")}</span>
             </div>
             <div className="mt-3 h-2 overflow-hidden rounded-full bg-muted">
               <div
@@ -134,7 +141,7 @@ function Wishes() {
             <input
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              placeholder="Porquê? O que quer lá fazer…"
+              placeholder="Porquê? O que queres lá fazer…"
               className={`${field} md:col-span-2`}
             />
           </div>
@@ -167,7 +174,7 @@ function Wishes() {
           <div className="mt-16 flex flex-col items-center text-center">
             <Globe lat={null} lng={null} size={200} />
             <p className="mt-6 font-display text-3xl italic">O mundo é grande.</p>
-            <p className="mt-1 text-muted-foreground">Escreva o primeiro lugar com que sonha.</p>
+            <p className="mt-1 text-muted-foreground">Escreve o primeiro lugar com que sonhas.</p>
           </div>
         )}
 
@@ -202,6 +209,7 @@ function Wishes() {
                 big
                 onToggle={() => toggle.mutate(hero)}
                 onRemove={() => removeWish(hero)}
+                onEdit={() => setEditing(hero)}
               />
             </article>
             <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -220,6 +228,7 @@ function Wishes() {
                       km={km(w)}
                       onToggle={() => toggle.mutate(w)}
                       onRemove={() => removeWish(w)}
+                      onEdit={() => setEditing(w)}
                     />
                   </div>
                 </article>
@@ -272,6 +281,7 @@ function Wishes() {
           </section>
         )}
       </main>
+      {editing && <EditWishModal wish={editing} onClose={() => setEditing(null)} />}
     </div>
   );
 }
@@ -282,12 +292,14 @@ function WishBody({
   big,
   onToggle,
   onRemove,
+  onEdit,
 }: {
   w: Wish;
   km: number | null;
   big?: boolean;
   onToggle: () => void;
   onRemove: () => void;
+  onEdit: () => void;
 }) {
   const country = w.place.includes(",") ? countryOf(w.place) : "";
   return (
@@ -337,13 +349,100 @@ function WishBody({
           Já fui!
         </button>
         <button
+          onClick={onEdit}
+          aria-label="Editar desejo"
+          className="ml-auto rounded-full p-2 text-muted-foreground opacity-60 hover:text-foreground hover:opacity-100"
+        >
+          <Pencil className="h-4 w-4" />
+        </button>
+        <button
           onClick={onRemove}
           aria-label="Apagar desejo"
-          className="ml-auto rounded-full p-2 text-muted-foreground opacity-60 hover:text-destructive hover:opacity-100"
+          className="rounded-full p-2 text-muted-foreground opacity-60 hover:text-destructive hover:opacity-100"
         >
           <Trash2 className="h-4 w-4" />
         </button>
       </div>
     </div>
+  );
+}
+
+function EditWishModal({ wish, onClose }: { wish: Wish; onClose: () => void }) {
+  const { edit } = useWishMutations();
+  const [place, setPlace] = useState(wish.place);
+  const [note, setNote] = useState(wish.note);
+  const [when, setWhen] = useState(wish.when_text);
+  const [prio, setPrio] = useState(wish.priority);
+  const [busy, setBusy] = useState(false);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setBusy(true);
+    const moved = place.trim() !== wish.place;
+    const pos = moved ? await geocodePlace(place) : { lat: wish.lat, lng: wish.lng };
+    try {
+      await edit.mutateAsync({
+        ...wish,
+        place: place.trim(),
+        note: note.trim(),
+        when_text: when.trim(),
+        priority: prio,
+        lat: pos?.lat ?? null,
+        lng: pos?.lng ?? null,
+      });
+      toast.success(
+        moved && !pos ? "Desejo atualizado (lugar não encontrado no mapa)." : "Desejo atualizado.",
+      );
+      onClose();
+    } catch {
+      // Shown by the global mutation error handler.
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <Modal title="Editar desejo" onClose={onClose}>
+      <form onSubmit={submit} className="space-y-4">
+        <label className={modalLabel}>
+          Para onde?
+          <input
+            required
+            value={place}
+            onChange={(e) => setPlace(e.target.value)}
+            className={modalInput}
+          />
+        </label>
+        <label className={modalLabel}>
+          Quando?
+          <input
+            value={when}
+            onChange={(e) => setWhen(e.target.value)}
+            placeholder="ex.: primavera de 2027"
+            className={modalInput}
+          />
+        </label>
+        <label className={modalLabel}>
+          Porquê?
+          <input value={note} onChange={(e) => setNote(e.target.value)} className={modalInput} />
+        </label>
+        <div className="flex flex-wrap gap-2">
+          {[1, 2, 3].map((p) => (
+            <button
+              type="button"
+              key={p}
+              onClick={() => setPrio(p)}
+              className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition ${prio === p ? "border-primary bg-primary text-primary-foreground" : "border-input text-muted-foreground hover:border-primary"}`}
+            >
+              {Array.from({ length: p }).map((_, i) => (
+                <Star key={i} className="h-3 w-3 fill-current" />
+              ))}
+              {PRIO[p]}
+            </button>
+          ))}
+        </div>
+        <ModalActions onCancel={onClose} submitLabel="Guardar" busy={busy} />
+      </form>
+    </Modal>
   );
 }

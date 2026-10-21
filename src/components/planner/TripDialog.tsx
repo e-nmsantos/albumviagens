@@ -17,15 +17,24 @@ export function TripDialog({
   const { saveTrip, updateTrip } = useTripMutations();
   const [title, setTitle] = useState(trip?.title ?? "");
   const [destination, setDestination] = useState(trip?.destination ?? "");
-  const [dates, setDates] = useState(trip?.dates ?? "");
+  const [start, setStart] = useState(trip?.start_date ?? "");
+  const [end, setEnd] = useState(trip?.end_date ?? "");
+  const legacyDates = !trip?.start_date && trip?.dates ? trip.dates : "";
   const busy = saveTrip.isPending || updateTrip.isPending;
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+    if (start && end && end < start) {
+      toast.error("O regresso tem de ser depois da partida.");
+      return;
+    }
     const fields = {
       title: title.trim(),
       destination: destination.trim() || title.trim(),
-      dates: dates.trim(),
+      start_date: start,
+      end_date: start ? end : "",
+      // Old free-text dates are kept until real dates replace them.
+      dates: start ? "" : (trip?.dates ?? ""),
     };
     try {
       const saved = trip
@@ -42,7 +51,7 @@ export function TripDialog({
   return (
     <Modal
       title={trip ? "Editar viagem" : "Nova viagem"}
-      subtitle="Define o destino e o período."
+      subtitle="Define o destino e as datas."
       onClose={onClose}
     >
       <form onSubmit={submit} className="space-y-4">
@@ -66,15 +75,34 @@ export function TripDialog({
             className={input}
           />
         </label>
-        <label className={label}>
-          Datas
-          <input
-            placeholder="ex: 12 - 24 outubro 2026"
-            value={dates}
-            onChange={(e) => setDates(e.target.value)}
-            className={input}
-          />
-        </label>
+        <div className="grid grid-cols-2 gap-3">
+          <label className={label}>
+            Partida
+            <input
+              type="date"
+              value={start}
+              onChange={(e) => setStart(e.target.value)}
+              className={input}
+            />
+          </label>
+          <label className={label}>
+            Regresso
+            <input
+              type="date"
+              value={end}
+              min={start || undefined}
+              disabled={!start}
+              onChange={(e) => setEnd(e.target.value)}
+              className={`${input} disabled:opacity-50`}
+            />
+          </label>
+        </div>
+        {legacyDates && (
+          <p className="text-xs text-muted-foreground">
+            Datas antigas: “{legacyDates}”. Escolhe a partida e o regresso para teres a contagem
+            decrescente e as datas de cada dia.
+          </p>
+        )}
         <ModalActions
           onCancel={onClose}
           submitLabel={trip ? "Guardar" : "Criar viagem"}

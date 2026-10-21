@@ -1,15 +1,18 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import { ArrowRightLeft, Plus, Trash2 } from "lucide-react";
+import { ArrowRightLeft, Pencil, Plus, Trash2 } from "lucide-react";
 import { CURRENCIES, convert, formatMoney, toEUR } from "@/lib/currency";
+import { toIsoDay } from "@/lib/dates";
 import { tripOps, type TripExpense, type TripPlan } from "@/lib/trips";
 import { EXPENSE_CATEGORIES } from "@/lib/types";
+import { plural } from "@/lib/utils";
 import { Modal, ModalActions } from "./ui";
 import { input, label } from "./styles";
 import type { TripUpdate } from "./types";
 
 export function BudgetTab({ trip, update }: { trip: TripPlan; update: TripUpdate }) {
-  const [adding, setAdding] = useState(false);
+  // null: closed; "new": adding; an expense: editing it.
+  const [editing, setEditing] = useState<TripExpense | "new" | null>(null);
   const [editingLimit, setEditingLimit] = useState(false);
   const [calcAmount, setCalcAmount] = useState("100");
   const [calcFrom, setCalcFrom] = useState("EUR");
@@ -84,7 +87,7 @@ export function BudgetTab({ trip, update }: { trip: TripPlan; update: TripUpdate
               Valores noutras moedas convertidos com taxas aproximadas.
             </p>
             <button
-              onClick={() => setAdding(true)}
+              onClick={() => setEditing("new")}
               className="inline-flex shrink-0 items-center gap-2 rounded-full bg-primary px-5 py-2 text-xs font-semibold text-primary-foreground shadow hover:opacity-90"
             >
               <Plus className="h-3.5 w-3.5" />
@@ -107,14 +110,14 @@ export function BudgetTab({ trip, update }: { trip: TripPlan; update: TripUpdate
                 onChange={(e) => setCalcAmount(e.target.value)}
                 className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
               />
-              <CurrencySelect value={calcFrom} onChange={setCalcFrom} />
+              <CurrencySelect label="Moeda de origem" value={calcFrom} onChange={setCalcFrom} />
             </div>
             <p className="text-center text-xs text-muted-foreground">equivale a cerca de</p>
             <div className="flex items-center justify-between rounded-xl border border-primary/20 bg-primary/10 p-3">
               <span className="font-serif text-2xl font-bold">
                 {converted.toLocaleString("pt-PT", { maximumFractionDigits: 2 })}
               </span>
-              <CurrencySelect value={calcTo} onChange={setCalcTo} />
+              <CurrencySelect label="Moeda de destino" value={calcTo} onChange={setCalcTo} />
             </div>
             <p className="text-[11px] text-muted-foreground">
               Taxas fixas e aproximadas, não atualizadas em tempo real. Confirma no banco antes de
@@ -127,7 +130,9 @@ export function BudgetTab({ trip, update }: { trip: TripPlan; update: TripUpdate
       <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
         <div className="mb-4 flex items-center justify-between">
           <h4 className="font-serif text-xl font-medium">Despesas</h4>
-          <span className="text-xs text-muted-foreground">{trip.expenses.length} despesas</span>
+          <span className="text-xs text-muted-foreground">
+            {plural(trip.expenses.length, "despesa", "despesas")}
+          </span>
         </div>
         {trip.expenses.length === 0 ? (
           <p className="py-6 text-center text-xs italic text-muted-foreground">
@@ -162,6 +167,13 @@ export function BudgetTab({ trip, update }: { trip: TripPlan; update: TripUpdate
                     )}
                   </span>
                   <button
+                    onClick={() => setEditing(exp)}
+                    className="text-muted-foreground hover:text-foreground"
+                    title="Editar"
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </button>
+                  <button
                     onClick={() => remove(exp)}
                     className="text-muted-foreground hover:text-destructive"
                     title="Remover"
@@ -175,7 +187,14 @@ export function BudgetTab({ trip, update }: { trip: TripPlan; update: TripUpdate
         )}
       </div>
 
-      {adding && <AddExpenseModal trip={trip} update={update} onClose={() => setAdding(false)} />}
+      {editing && (
+        <ExpenseModal
+          trip={trip}
+          expense={editing === "new" ? undefined : editing}
+          update={update}
+          onClose={() => setEditing(null)}
+        />
+      )}
       {editingLimit && (
         <BudgetLimitModal trip={trip} update={update} onClose={() => setEditingLimit(false)} />
       )}
@@ -183,12 +202,20 @@ export function BudgetTab({ trip, update }: { trip: TripPlan; update: TripUpdate
   );
 }
 
-function CurrencySelect({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+function CurrencySelect({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+}) {
   return (
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      aria-label="Moeda"
+      aria-label={label}
       className="rounded-xl border border-input bg-card px-3 py-2 text-xs font-semibold outline-none"
     >
       {CURRENCIES.map((c) => (
@@ -200,20 +227,23 @@ function CurrencySelect({ value, onChange }: { value: string; onChange: (v: stri
   );
 }
 
-function AddExpenseModal({
+/** Adds an expense, or edits `expense`. */
+function ExpenseModal({
   trip,
+  expense: x,
   update,
   onClose,
 }: {
   trip: TripPlan;
+  expense?: TripExpense | undefined;
   update: TripUpdate;
   onClose: () => void;
 }) {
-  const [description, setDescription] = useState("");
-  const [amount, setAmount] = useState("");
-  const [currency, setCurrency] = useState(trip.expenses[0]?.currency ?? "EUR");
-  const [category, setCategory] = useState<TripExpense["category"]>("alimentacao");
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
+  const [description, setDescription] = useState(x?.description ?? "");
+  const [amount, setAmount] = useState(x ? String(x.amount).replace(".", ",") : "");
+  const [currency, setCurrency] = useState(x?.currency ?? trip.expenses[0]?.currency ?? "EUR");
+  const [category, setCategory] = useState<TripExpense["category"]>(x?.category ?? "alimentacao");
+  const [date, setDate] = useState(x?.date ?? toIsoDay(new Date()));
   const [busy, setBusy] = useState(false);
 
   async function submit(e: React.FormEvent) {
@@ -224,23 +254,20 @@ function AddExpenseModal({
       return;
     }
     setBusy(true);
-    const ok = await update(
-      tripOps.addExpense({
-        description: description.trim(),
-        amount: value,
-        currency,
-        category,
-        date,
-      }),
-    );
+    const fields = { description: description.trim(), amount: value, currency, category, date };
+    const ok = await update(x ? tripOps.updateExpense(x.id, fields) : tripOps.addExpense(fields));
     setBusy(false);
     if (!ok) return;
-    toast.success("Despesa registada.");
+    toast.success(x ? "Despesa atualizada." : "Despesa registada.");
     onClose();
   }
 
   return (
-    <Modal title="Registar despesa" subtitle={`Para a viagem ${trip.title}`} onClose={onClose}>
+    <Modal
+      title={x ? "Editar despesa" : "Registar despesa"}
+      subtitle={`Viagem ${trip.title}`}
+      onClose={onClose}
+    >
       <form onSubmit={submit} className="space-y-4">
         <label className={label}>
           Descrição
@@ -304,7 +331,11 @@ function AddExpenseModal({
             />
           </label>
         </div>
-        <ModalActions onCancel={onClose} submitLabel="Guardar despesa" busy={busy} />
+        <ModalActions
+          onCancel={onClose}
+          submitLabel={x ? "Guardar" : "Guardar despesa"}
+          busy={busy}
+        />
       </form>
     </Modal>
   );

@@ -8,6 +8,8 @@
 - Pages under `src/routes/_authenticated/` work in both modes (no login gate); `/auth`, `/reset-password` and `/partilha/$id` are public. Sharing needs the cloud.
 - Maps: Leaflet + OpenStreetMap tiles (src/components/MemoryMap.tsx); the SVG world map and globes use d3-geo + world-atlas (src/lib/world.ts). Places are geocoded in the browser with Nominatim (src/lib/geocode.ts).
 - AI (src/lib/ai.functions.ts, helpers in ai.server.ts / ai-text.ts): story writing and itinerary suggestions. Paid keys (GEMINI_API_KEY, OPENAI_API_KEY, GROQ_API_KEY; optional *_MODEL) are used only for signed-in users in production (any user in dev); otherwise the free Pollinations service is tried (text only), then a plain template. The UI always says when a template was used. Photos are sent as small client-made JPEG thumbnails, never as URLs. src/start.ts attaches the user's token to server function calls.
+- Trip dates are ISO `start_date`/`end_date` (old free-text `dates` is shown only when they're empty); reservation times are ISO date-times; formatting, countdown and trip order live in src/lib/dates.ts.
+- UI text is European Portuguese and addresses the person as "tu"; headings use sentence case. Use `plural()` from src/lib/utils.ts for counts.
 - Exchange rates in src/lib/currency.ts are fixed approximations, labelled as such in the UI.
 - The app is installable via public/manifest.webmanifest only (no service worker / offline).
 - Checks: `npm test`, `npm run lint`, `npx tsc --noEmit`, `npm run build`.

@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import { ListChecks, Trash2 } from "lucide-react";
+import { ListChecks, Pencil, Trash2 } from "lucide-react";
 import { tripOps, type PackingItem, type TripPlan } from "@/lib/trips";
 import { PACKING_CATEGORIES } from "@/lib/types";
+import { plural } from "@/lib/utils";
+import { tripDatesLabel } from "@/lib/dates";
 import { suggestPacking } from "@/lib/packing";
 import type { TripUpdate } from "./types";
 
@@ -22,7 +24,7 @@ export function PackingTab({ trip, update }: { trip: TripPlan; update: TripUpdat
 
   async function suggest() {
     const before = items.length;
-    const list = suggestPacking(trip.destination, trip.dates);
+    const list = suggestPacking(trip.destination, tripDatesLabel(trip));
     if (!(await update(tripOps.addPacking(list)))) return;
     const added = list.filter(
       (i) => !items.some((x) => x.name.toLowerCase() === i.name.toLowerCase()),
@@ -59,7 +61,7 @@ export function PackingTab({ trip, update }: { trip: TripPlan; update: TripUpdat
         <div className="rounded-2xl border border-border bg-card p-5">
           <div className="mb-2 flex justify-between text-xs text-muted-foreground">
             <span className="font-medium text-foreground">
-              {packed} de {items.length} itens na mala
+              {packed} de {plural(items.length, "item", "itens")} na mala
             </span>
             <span className="font-bold text-primary">{pct}%</span>
           </div>
@@ -113,32 +115,7 @@ export function PackingTab({ trip, update }: { trip: TripPlan; update: TripUpdat
               </h4>
               <ul className="space-y-2 text-sm">
                 {list.map((item) => (
-                  <li key={item.id} className="group flex items-center justify-between gap-2">
-                    <label className="flex flex-1 cursor-pointer items-center gap-2">
-                      <input
-                        type="checkbox"
-                        checked={item.packed}
-                        onChange={() => void update(tripOps.togglePacking(item.id))}
-                        className="h-4 w-4 accent-primary"
-                      />
-                      <span
-                        className={
-                          item.packed
-                            ? "text-xs text-muted-foreground line-through"
-                            : "text-xs font-medium"
-                        }
-                      >
-                        {item.name}
-                      </span>
-                    </label>
-                    <button
-                      onClick={() => void update(tripOps.removePacking(item.id))}
-                      aria-label={`Remover ${item.name}`}
-                      className="text-muted-foreground opacity-60 transition-opacity hover:text-destructive group-hover:opacity-100"
-                    >
-                      <Trash2 className="h-3 w-3" />
-                    </button>
-                  </li>
+                  <PackingRow key={item.id} item={item} update={update} />
                 ))}
               </ul>
             </div>
@@ -146,5 +123,66 @@ export function PackingTab({ trip, update }: { trip: TripPlan; update: TripUpdat
         })}
       </div>
     </div>
+  );
+}
+
+function PackingRow({ item, update }: { item: PackingItem; update: TripUpdate }) {
+  const [name, setName] = useState<string | null>(null); // non-null while renaming
+
+  function save() {
+    const next = name?.trim();
+    setName(null);
+    if (next && next !== item.name) void update(tripOps.renamePacking(item.id, next));
+  }
+
+  return (
+    <li className="group flex items-center justify-between gap-2">
+      {name !== null ? (
+        <input
+          autoFocus
+          value={name}
+          aria-label="Nome do item"
+          onChange={(e) => setName(e.target.value)}
+          onBlur={save}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") save();
+            if (e.key === "Escape") setName(null);
+          }}
+          className="flex-1 rounded-md border border-input bg-background px-2 py-0.5 text-xs outline-none focus:ring-2 focus:ring-ring"
+        />
+      ) : (
+        <label className="flex flex-1 cursor-pointer items-center gap-2">
+          <input
+            type="checkbox"
+            checked={item.packed}
+            onChange={() => void update(tripOps.togglePacking(item.id))}
+            className="h-4 w-4 accent-primary"
+          />
+          <span
+            className={
+              item.packed ? "text-xs text-muted-foreground line-through" : "text-xs font-medium"
+            }
+          >
+            {item.name}
+          </span>
+        </label>
+      )}
+      <span className="flex gap-2 opacity-60 transition-opacity group-hover:opacity-100">
+        <button
+          onClick={() => setName(item.name)}
+          aria-label={`Mudar o nome de ${item.name}`}
+          className="text-muted-foreground hover:text-foreground"
+        >
+          <Pencil className="h-3 w-3" />
+        </button>
+        <button
+          onClick={() => void update(tripOps.removePacking(item.id))}
+          aria-label={`Remover ${item.name}`}
+          className="text-muted-foreground hover:text-destructive"
+        >
+          <Trash2 className="h-3 w-3" />
+        </button>
+      </span>
+    </li>
   );
 }

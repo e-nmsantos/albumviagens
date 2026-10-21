@@ -9,7 +9,7 @@ export const Route = createFileRoute("/_authenticated/passaporte")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Passaporte de Viagens — Memórias" },
+      { title: "Passaporte de viagens — Memórias" },
       {
         name: "description",
         content:
@@ -87,9 +87,9 @@ function PassportPage() {
           <div>
             <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-primary">
               <Sparkles className="h-4 w-4" />
-              <span>Coleção Oficial de Fronteiras</span>
+              <span>Coleção de carimbos</span>
             </div>
-            <h1 className="mt-1 font-serif text-3xl md:text-4xl">O Teu Passaporte de Viagens</h1>
+            <h1 className="mt-1 font-serif text-3xl md:text-4xl">O teu passaporte de viagens</h1>
           </div>
 
           <button
@@ -97,7 +97,7 @@ function PassportPage() {
             className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-xs font-semibold text-foreground shadow-sm hover:bg-accent transition-colors"
           >
             <Printer className="h-4 w-4 text-primary" />
-            <span>Imprimir Passaporte</span>
+            <span>Imprimir</span>
           </button>
         </div>
 
@@ -112,7 +112,7 @@ function PassportPage() {
               </span>
             </div>
             <p className="text-[10px] tracking-[0.3em] uppercase text-amber-300/80 mt-1 font-mono">
-              Travel Document · Coleção Pessoal de Fronteiras
+              Documento de viagem · coleção pessoal
             </p>
           </div>
 
@@ -122,10 +122,10 @@ function PassportPage() {
               <div>
                 <div className="flex items-center justify-between border-b border-stone-300 pb-3 dark:border-stone-800">
                   <span className="text-[11px] font-bold uppercase tracking-wider text-stone-500">
-                    Página do Titular
+                    Página do titular
                   </span>
                   <span className="font-mono text-xs font-bold text-primary">
-                    PASSPORT Nº {memories.length}24-X
+                    PASSAPORTE Nº {memories.length}24-X
                   </span>
                 </div>
 
@@ -152,7 +152,7 @@ function PassportPage() {
                   <div className="space-y-2 text-xs">
                     <div>
                       <span className="block text-[10px] font-bold uppercase tracking-wider text-stone-400">
-                        Nome / Titular
+                        Titular
                       </span>
                       <span className="font-serif text-sm font-semibold text-stone-900 dark:text-stone-100">
                         Viajante do Mundo
@@ -163,12 +163,12 @@ function PassportPage() {
                         Nacionalidade
                       </span>
                       <span className="font-semibold text-stone-800 dark:text-stone-200">
-                        Cidadão do Mundo (PT)
+                        Cidadão do mundo (PT)
                       </span>
                     </div>
                     <div>
                       <span className="block text-[10px] font-bold uppercase tracking-wider text-stone-400">
-                        Primeira Viagem
+                        Primeira viagem
                       </span>
                       <span className="font-semibold text-stone-800 dark:text-stone-200">
                         Desde {firstYear}
@@ -183,13 +183,13 @@ function PassportPage() {
                     <span className="block font-serif text-2xl font-bold text-primary">
                       {totalCountries}
                     </span>
-                    <span className="text-[11px] text-stone-500">Países Carimbados</span>
+                    <span className="text-[11px] text-stone-500">Países carimbados</span>
                   </div>
                   <div className="rounded-xl border border-stone-200 bg-white/70 dark:border-stone-800 dark:bg-stone-800/40 p-3 text-center">
                     <span className="block font-serif text-2xl font-bold text-forest">
                       {stamps.length}
                     </span>
-                    <span className="text-[11px] text-stone-500">Carimbos / Cidades</span>
+                    <span className="text-[11px] text-stone-500">Lugares</span>
                   </div>
                 </div>
               </div>
@@ -207,9 +207,9 @@ function PassportPage() {
             <div className="p-8 md:col-span-7 relative">
               <div className="flex items-center justify-between border-b border-stone-300 pb-3 dark:border-stone-800">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-stone-500">
-                  Vistos & Carimbos de Entrada (Stamps)
+                  Vistos e carimbos de entrada
                 </span>
-                <span className="text-xs text-stone-500 font-serif italic">Páginas 04 - 05</span>
+                <span className="text-xs text-stone-500 font-serif italic">Páginas 4 e 5</span>
               </div>
 
               {/* Grid of Authentic Rubber Stamps */}
@@ -244,7 +244,7 @@ function PassportPage() {
                         } shadow-sm ring-2 ${style.ring}`}
                       >
                         <div className="text-[9px] uppercase font-bold tracking-widest opacity-80">
-                          ★ IMMIGRATION ★
+                          ★ ENTRADA ★
                         </div>
                         <h4 className="font-serif text-sm font-bold uppercase tracking-tight mt-1 leading-tight">
                           {stamp.place}

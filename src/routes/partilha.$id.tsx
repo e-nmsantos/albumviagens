@@ -10,9 +10,9 @@ export const Route = createFileRoute("/partilha/$id")({
   head: () => ({
     meta: [
       { title: "Uma memória de viagem — Memórias" },
-      { name: "description", content: "Alguém partilhou consigo uma memória de viagem." },
+      { name: "description", content: "Alguém partilhou contigo uma memória de viagem." },
       { property: "og:title", content: "Uma memória de viagem — Memórias" },
-      { property: "og:description", content: "Alguém partilhou consigo uma memória de viagem." },
+      { property: "og:description", content: "Alguém partilhou contigo uma memória de viagem." },
     ],
   }),
   component: Shared,
@@ -57,7 +57,7 @@ function Shared() {
       <article className="mx-auto max-w-3xl px-6 pb-24">
         {isLoading ? null : isError ? (
           <p className="py-20 text-center text-muted-foreground">
-            Não foi possível abrir esta memória. Verifique a ligação e tente outra vez.
+            Não foi possível abrir esta memória. Verifica a ligação e tenta outra vez.
           </p>
         ) : !m ? (
           <p className="py-20 text-center text-muted-foreground">

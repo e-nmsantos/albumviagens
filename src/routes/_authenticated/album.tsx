@@ -11,6 +11,7 @@ import {
   type Memory,
 } from "@/lib/memories";
 import { usePhotoUrls } from "@/lib/photos";
+import { plural } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/album")({
   head: () => ({
@@ -19,7 +20,7 @@ export const Route = createFileRoute("/_authenticated/album")({
       {
         name: "description",
         content:
-          "Escolha as memórias e crie um álbum fotográfico pronto a imprimir ou guardar em PDF.",
+          "Escolhe as memórias e cria um álbum fotográfico pronto a imprimir ou guardar em PDF.",
       },
       { property: "og:title", content: "Álbum fotográfico — Memórias" },
       { property: "og:description", content: "Um álbum fotográfico de viagem pronto a imprimir." },
@@ -149,7 +150,7 @@ function Album() {
           O álbum <em className="text-primary">fotográfico</em>
         </h1>
         <p className="mt-2 max-w-2xl text-muted-foreground">
-          Escolha as memórias e o formato. Ao imprimir, escolha “Guardar como PDF” para levar a uma
+          Escolhe as memórias e o formato. Ao imprimir, escolhe “Guardar como PDF” para levar a uma
           gráfica — as páginas já saem no tamanho certo, sem margens.
         </p>
 
@@ -223,7 +224,7 @@ function Album() {
                 </div>
                 <p className="mt-1 truncate text-xs">{m.title}</p>
                 <p className="text-[10px] text-muted-foreground">
-                  {m.date.slice(0, 4)} · {m.photos.length} fotos
+                  {m.date.slice(0, 4)} · {plural(m.photos.length, "foto", "fotos")}
                 </p>
                 <span
                   className={`absolute right-2 top-2 grid h-6 w-6 place-items-center rounded-full ${on ? "bg-primary text-primary-foreground" : "bg-card/90"}`}
