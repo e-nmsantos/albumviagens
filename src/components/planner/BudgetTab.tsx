@@ -60,7 +60,7 @@ export function BudgetTab({ trip, update }: { trip: TripPlan; update: TripUpdate
             <div>
               <span className="block text-xs text-muted-foreground">Restante</span>
               <span
-                className={`font-serif text-xl font-bold md:text-2xl ${limit > 0 && limit - spent < 0 ? "text-rose-600" : "text-emerald-600"}`}
+                className={`font-serif text-xl font-bold md:text-2xl ${limit > 0 && limit - spent < 0 ? "text-destructive" : "text-forest"}`}
               >
                 {limit > 0 ? formatMoney(limit - spent) : "—"}
               </span>
@@ -75,7 +75,7 @@ export function BudgetTab({ trip, update }: { trip: TripPlan; update: TripUpdate
               </div>
               <div className="h-3 w-full overflow-hidden rounded-full bg-secondary">
                 <div
-                  className={`h-full transition-all duration-500 ${progress > 95 ? "bg-rose-500" : progress > 75 ? "bg-amber-500" : "bg-emerald-500"}`}
+                  className={`h-full transition-all duration-500 ${progress > 95 ? "bg-destructive" : progress > 75 ? "bg-amber-300" : "bg-sage"}`}
                   style={{ width: `${progress}%` }}
                 />
               </div>

@@ -23,9 +23,9 @@ export const Route = createFileRoute("/_authenticated/passaporte")({
 // Color themes for authentic immigration rubber stamps
 const STAMP_STYLES = [
   {
-    border: "border-rose-700/80 text-rose-800 dark:border-rose-400 dark:text-rose-300",
-    bg: "bg-rose-500/5",
-    ring: "ring-rose-500/20",
+    border: "border-teal-700/80 text-teal-800 dark:border-teal-400 dark:text-teal-300",
+    bg: "bg-teal-500/5",
+    ring: "ring-teal-500/20",
   },
   {
     border: "border-blue-800/80 text-blue-900 dark:border-blue-400 dark:text-blue-300",
@@ -33,19 +33,19 @@ const STAMP_STYLES = [
     ring: "ring-blue-500/20",
   },
   {
-    border: "border-emerald-800/80 text-emerald-900 dark:border-emerald-400 dark:text-emerald-300",
-    bg: "bg-emerald-500/5",
-    ring: "ring-emerald-500/20",
+    border: "border-teal-800/80 text-teal-900 dark:border-teal-400 dark:text-teal-300",
+    bg: "bg-teal-500/5",
+    ring: "ring-teal-500/20",
   },
   {
-    border: "border-purple-800/80 text-purple-900 dark:border-purple-400 dark:text-purple-300",
-    bg: "bg-purple-500/5",
-    ring: "ring-purple-500/20",
+    border: "border-indigo-800/80 text-indigo-900 dark:border-indigo-400 dark:text-indigo-300",
+    bg: "bg-indigo-500/5",
+    ring: "ring-indigo-500/20",
   },
   {
-    border: "border-amber-800/80 text-amber-900 dark:border-amber-400 dark:text-amber-300",
-    bg: "bg-amber-500/5",
-    ring: "ring-amber-500/20",
+    border: "border-sky-800/80 text-sky-900 dark:border-sky-400 dark:text-sky-300",
+    bg: "bg-sky-500/5",
+    ring: "ring-sky-500/20",
   },
 ];
 
@@ -78,7 +78,7 @@ function PassportPage() {
   const portraitUrl = usePhotoUrls([portrait])[portrait ?? ""];
 
   return (
-    <div className="min-h-screen bg-stone-100 dark:bg-stone-950 pb-24">
+    <div className="min-h-screen bg-slate-100 dark:bg-slate-950 pb-24">
       <SiteHeader />
 
       <main className="mx-auto max-w-5xl px-6 pt-4">
@@ -102,26 +102,26 @@ function PassportPage() {
         </div>
 
         {/* PASSPORT BOOK CONTAINER */}
-        <div className="relative mx-auto overflow-hidden rounded-3xl border border-stone-300 bg-[#fbf9f4] shadow-2xl dark:border-stone-800 dark:bg-[#1a1917] print:shadow-none print:border-none">
+        <div className="relative mx-auto overflow-hidden rounded-3xl border border-slate-300 bg-[#f7fafb] shadow-2xl dark:border-slate-800 dark:bg-[#161d22] print:shadow-none print:border-none">
           {/* Top Banner / Leather Border Effect */}
-          <div className="bg-[#1c2333] px-8 py-6 text-center text-amber-200 border-b-4 border-amber-500/60 shadow-inner">
+          <div className="bg-[#1c2333] px-8 py-6 text-center text-sky-200 border-b-4 border-sky-500/60 shadow-inner">
             <div className="flex items-center justify-center gap-3">
-              <Globe className="h-7 w-7 text-amber-400 animate-pulse" />
+              <Globe className="h-7 w-7 text-sky-400 animate-pulse" />
               <span className="font-serif text-xl tracking-[0.25em] uppercase font-medium">
                 Passaporte de Memórias
               </span>
             </div>
-            <p className="text-[10px] tracking-[0.3em] uppercase text-amber-300/80 mt-1 font-mono">
+            <p className="text-[10px] tracking-[0.3em] uppercase text-sky-300/80 mt-1 font-mono">
               Documento de viagem · coleção pessoal
             </p>
           </div>
 
-          <div className="grid md:grid-cols-12 divide-y md:divide-y-0 md:divide-x divide-stone-300 dark:divide-stone-800">
+          <div className="grid md:grid-cols-12 divide-y md:divide-y-0 md:divide-x divide-slate-300 dark:divide-slate-800">
             {/* LEFT PAGE: Personal Identity Page */}
-            <div className="p-8 md:col-span-5 flex flex-col justify-between bg-stone-50/60 dark:bg-stone-900/40">
+            <div className="p-8 md:col-span-5 flex flex-col justify-between bg-slate-50/60 dark:bg-slate-900/40">
               <div>
-                <div className="flex items-center justify-between border-b border-stone-300 pb-3 dark:border-stone-800">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-stone-500">
+                <div className="flex items-center justify-between border-b border-slate-300 pb-3 dark:border-slate-800">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
                     Página do titular
                   </span>
                   <span className="font-mono text-xs font-bold text-primary">
@@ -132,7 +132,7 @@ function PassportPage() {
                 {/* Identity Layout */}
                 <div className="mt-6 flex gap-4">
                   {/* Photo Box */}
-                  <div className="relative h-32 w-28 shrink-0 overflow-hidden rounded-xl border-2 border-stone-400 bg-stone-200 dark:border-stone-700 dark:bg-stone-800 shadow-inner">
+                  <div className="relative h-32 w-28 shrink-0 overflow-hidden rounded-xl border-2 border-slate-400 bg-slate-200 dark:border-slate-700 dark:bg-slate-800 shadow-inner">
                     {portraitUrl ? (
                       <img
                         src={portraitUrl}
@@ -140,37 +140,37 @@ function PassportPage() {
                         className="h-full w-full object-cover grayscale contrast-125"
                       />
                     ) : (
-                      <div className="flex h-full w-full flex-col items-center justify-center text-stone-400">
+                      <div className="flex h-full w-full flex-col items-center justify-center text-slate-400">
                         <Compass className="h-8 w-8" />
                         <span className="text-[10px] uppercase font-bold mt-1">Viajante</span>
                       </div>
                     )}
-                    <div className="absolute inset-0 bg-amber-500/10 pointer-events-none" />
+                    <div className="absolute inset-0 bg-sky-500/10 pointer-events-none" />
                   </div>
 
                   {/* Personal info */}
                   <div className="space-y-2 text-xs">
                     <div>
-                      <span className="block text-[10px] font-bold uppercase tracking-wider text-stone-400">
+                      <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-400">
                         Titular
                       </span>
-                      <span className="font-serif text-sm font-semibold text-stone-900 dark:text-stone-100">
+                      <span className="font-serif text-sm font-semibold text-slate-900 dark:text-slate-100">
                         Viajante do Mundo
                       </span>
                     </div>
                     <div>
-                      <span className="block text-[10px] font-bold uppercase tracking-wider text-stone-400">
+                      <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-400">
                         Nacionalidade
                       </span>
-                      <span className="font-semibold text-stone-800 dark:text-stone-200">
+                      <span className="font-semibold text-slate-800 dark:text-slate-200">
                         Cidadão do mundo (PT)
                       </span>
                     </div>
                     <div>
-                      <span className="block text-[10px] font-bold uppercase tracking-wider text-stone-400">
+                      <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-400">
                         Primeira viagem
                       </span>
-                      <span className="font-semibold text-stone-800 dark:text-stone-200">
+                      <span className="font-semibold text-slate-800 dark:text-slate-200">
                         Desde {firstYear}
                       </span>
                     </div>
@@ -178,24 +178,24 @@ function PassportPage() {
                 </div>
 
                 {/* Passport Key Statistics */}
-                <div className="mt-6 grid grid-cols-2 gap-3 border-t border-stone-300 dark:border-stone-800 pt-5">
-                  <div className="rounded-xl border border-stone-200 bg-white/70 dark:border-stone-800 dark:bg-stone-800/40 p-3 text-center">
+                <div className="mt-6 grid grid-cols-2 gap-3 border-t border-slate-300 dark:border-slate-800 pt-5">
+                  <div className="rounded-xl border border-slate-200 bg-white/70 dark:border-slate-800 dark:bg-slate-800/40 p-3 text-center">
                     <span className="block font-serif text-2xl font-bold text-primary">
                       {totalCountries}
                     </span>
-                    <span className="text-[11px] text-stone-500">Países carimbados</span>
+                    <span className="text-[11px] text-slate-500">Países carimbados</span>
                   </div>
-                  <div className="rounded-xl border border-stone-200 bg-white/70 dark:border-stone-800 dark:bg-stone-800/40 p-3 text-center">
+                  <div className="rounded-xl border border-slate-200 bg-white/70 dark:border-slate-800 dark:bg-slate-800/40 p-3 text-center">
                     <span className="block font-serif text-2xl font-bold text-forest">
                       {stamps.length}
                     </span>
-                    <span className="text-[11px] text-stone-500">Lugares</span>
+                    <span className="text-[11px] text-slate-500">Lugares</span>
                   </div>
                 </div>
               </div>
 
               {/* Machine Readable Zone (MRZ) */}
-              <div className="mt-8 border-t border-stone-300 pt-4 dark:border-stone-800 font-mono text-[10px] tracking-widest text-stone-500 select-all overflow-x-auto whitespace-nowrap">
+              <div className="mt-8 border-t border-slate-300 pt-4 dark:border-slate-800 font-mono text-[10px] tracking-widest text-slate-500 select-all overflow-x-auto whitespace-nowrap">
                 P&lt;PRTVIAJANTE&lt;&lt;EXPLORADOR&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
                 <br />
                 M9981240&lt;4PRT{firstYear}
@@ -205,11 +205,11 @@ function PassportPage() {
 
             {/* RIGHT PAGE: Stamps Grid (Páginas de Vistos e Carimbos) */}
             <div className="p-8 md:col-span-7 relative">
-              <div className="flex items-center justify-between border-b border-stone-300 pb-3 dark:border-stone-800">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-stone-500">
+              <div className="flex items-center justify-between border-b border-slate-300 pb-3 dark:border-slate-800">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
                   Vistos e carimbos de entrada
                 </span>
-                <span className="text-xs text-stone-500 font-serif italic">Páginas 4 e 5</span>
+                <span className="text-xs text-slate-500 font-serif italic">Páginas 4 e 5</span>
               </div>
 
               {/* Grid of Authentic Rubber Stamps */}
@@ -270,7 +270,7 @@ function PassportPage() {
               </div>
 
               {stamps.length === 0 && (
-                <div className="py-16 text-center text-stone-400">
+                <div className="py-16 text-center text-slate-400">
                   <Compass className="mx-auto h-12 w-12 opacity-30 mb-2" />
                   <p className="text-sm font-serif italic">Nenhum carimbo registado ainda.</p>
                   <p className="text-xs mt-1">

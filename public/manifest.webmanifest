@@ -3,8 +3,8 @@
   "short_name": "Memórias",
   "start_url": "/diario",
   "display": "standalone",
-  "background_color": "#f7f1e8",
-  "theme_color": "#c4654a",
+  "background_color": "#f3f8fa",
+  "theme_color": "#386a86",
   "lang": "pt-PT",
   "icons": [
     { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },

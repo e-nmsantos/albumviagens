@@ -130,20 +130,20 @@ function HomePage() {
             <div className="md:col-span-5">
               <div className="relative mx-auto max-w-sm">
                 {/* Background decorative tilt */}
-                <div className="absolute -inset-1 rounded-3xl bg-gradient-to-tr from-amber-400/20 via-primary/20 to-emerald-400/20 blur-xl opacity-70" />
+                <div className="absolute -inset-1 rounded-3xl bg-gradient-to-tr from-sky-400/20 via-primary/20 to-teal-400/20 blur-xl opacity-70" />
 
                 {/* Sticky Note Inspired Card */}
-                <div className="relative rounded-2xl border border-amber-200/80 bg-[#fffdf0] p-6 text-stone-800 shadow-xl dark:border-amber-900/40 dark:bg-stone-900 dark:text-stone-100 rotate-1 transition-transform hover:rotate-0 duration-300">
+                <div className="relative rounded-2xl border border-sky-200/80 bg-[#f4f9fb] p-6 text-slate-800 shadow-xl dark:border-sky-900/40 dark:bg-slate-900 dark:text-slate-100 rotate-1 transition-transform hover:rotate-0 duration-300">
                   {/* Pin badge */}
-                  <div className="absolute -top-3 left-8 flex items-center gap-1.5 rounded-full bg-amber-500/90 px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
+                  <div className="absolute -top-3 left-8 flex items-center gap-1.5 rounded-full bg-primary px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary-foreground shadow-sm">
                     <span>📌 Planeador</span>
                   </div>
 
-                  <div className="mt-2 flex items-center justify-between border-b border-amber-200/60 pb-3 dark:border-stone-800">
-                    <span className="font-serif text-2xl italic tracking-tight font-medium text-stone-900 dark:text-white">
+                  <div className="mt-2 flex items-center justify-between border-b border-sky-200/60 pb-3 dark:border-slate-800">
+                    <span className="font-serif text-2xl italic tracking-tight font-medium text-slate-900 dark:text-white">
                       De momentos a planos
                     </span>
-                    <span className="text-xs font-semibold text-amber-700 dark:text-amber-400 bg-amber-100 dark:bg-amber-950/60 px-2.5 py-1 rounded-full">
+                    <span className="text-xs font-semibold text-sky-700 dark:text-sky-400 bg-sky-100 dark:bg-sky-950/60 px-2.5 py-1 rounded-full">
                       Tudo num só lugar
                     </span>
                   </div>
@@ -151,32 +151,32 @@ function HomePage() {
                   {/* Checklist items */}
                   <ul className="mt-4 space-y-3.5 text-sm">
                     <li className="flex items-start gap-2.5">
-                      <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-600 dark:text-emerald-400 mt-0.5" />
+                      <CheckCircle2 className="h-5 w-5 shrink-0 text-teal-600 dark:text-teal-400 mt-0.5" />
                       <span>
                         <strong>Transforma fotos</strong> e ideias em roteiros organizados
                       </span>
                     </li>
                     <li className="flex items-start gap-2.5">
-                      <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-600 dark:text-emerald-400 mt-0.5" />
+                      <CheckCircle2 className="h-5 w-5 shrink-0 text-teal-600 dark:text-teal-400 mt-0.5" />
                       <span>
                         <strong>Itinerário dia a dia</strong> com horários, notas e locais
                       </span>
                     </li>
                     <li className="flex items-start gap-2.5">
-                      <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-600 dark:text-emerald-400 mt-0.5" />
+                      <CheckCircle2 className="h-5 w-5 shrink-0 text-teal-600 dark:text-teal-400 mt-0.5" />
                       <span>
                         <strong>Mapa de percurso</strong> para seguir cada paragem visualmente
                       </span>
                     </li>
                     <li className="flex items-start gap-2.5">
-                      <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-600 dark:text-emerald-400 mt-0.5" />
+                      <CheckCircle2 className="h-5 w-5 shrink-0 text-teal-600 dark:text-teal-400 mt-0.5" />
                       <span>
                         <strong>Sugestões com Inteligência Artificial</strong> para roteiros e
                         textos
                       </span>
                     </li>
                     <li className="flex items-start gap-2.5">
-                      <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-600 dark:text-emerald-400 mt-0.5" />
+                      <CheckCircle2 className="h-5 w-5 shrink-0 text-teal-600 dark:text-teal-400 mt-0.5" />
                       {user ? (
                         <span>
                           <strong>Guardado na tua conta</strong>, disponível em qualquer dispositivo
@@ -192,20 +192,20 @@ function HomePage() {
 
                   {/* Mini preview of the newest trip */}
                   {featured && (
-                    <div className="mt-5 rounded-xl border border-amber-200/60 bg-white/70 p-3 shadow-inner dark:border-stone-800 dark:bg-stone-800/60">
-                      <div className="flex items-center justify-between text-xs text-stone-600 dark:text-stone-300">
-                        <span className="font-semibold text-stone-800 dark:text-stone-200">
+                    <div className="mt-5 rounded-xl border border-sky-200/60 bg-white/70 p-3 shadow-inner dark:border-slate-800 dark:bg-slate-800/60">
+                      <div className="flex items-center justify-between text-xs text-slate-600 dark:text-slate-300">
+                        <span className="font-semibold text-slate-800 dark:text-slate-200">
                           {featured.title}
                         </span>
-                        <span className="text-[11px] text-amber-700 dark:text-amber-400">
+                        <span className="text-[11px] text-sky-700 dark:text-sky-400">
                           {plural(featured.days.length, "paragem planeada", "paragens planeadas")}
                         </span>
                       </div>
-                      <div className="mt-2 flex gap-1.5 overflow-hidden text-[11px] text-stone-600 dark:text-stone-400">
+                      <div className="mt-2 flex gap-1.5 overflow-hidden text-[11px] text-slate-600 dark:text-slate-400">
                         {featured.days.slice(0, 3).map((d) => (
                           <span
                             key={d.id}
-                            className="truncate rounded bg-amber-100/80 px-2 py-0.5 dark:bg-stone-700"
+                            className="truncate rounded bg-sky-100/80 px-2 py-0.5 dark:bg-slate-700"
                           >
                             D{d.day_number}: {d.title}
                           </span>
@@ -217,7 +217,7 @@ function HomePage() {
                   <div className="mt-4 text-center">
                     <Link
                       to="/planeador"
-                      className="inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-stone-700 dark:text-stone-200 hover:text-primary transition-colors"
+                      className="inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:text-primary transition-colors"
                     >
                       <span>Abrir os meus itinerários</span>
                       <ArrowRight className="h-3.5 w-3.5" />
@@ -262,7 +262,7 @@ function HomePage() {
                   key={trip.id}
                   className="group relative flex flex-col overflow-hidden rounded-2xl border border-border/70 bg-card shadow-sm transition-all hover:-translate-y-1 hover:shadow-md"
                 >
-                  <div className="relative h-44 w-full overflow-hidden bg-gradient-to-br from-primary/40 via-amber-300/30 to-forest/40">
+                  <div className="relative h-44 w-full overflow-hidden bg-gradient-to-br from-primary/40 via-sky-300/30 to-forest/40">
                     {coverPhoto && (
                       <img
                         src={coverPhoto}
@@ -302,7 +302,7 @@ function HomePage() {
                         {days.slice(0, 2).map((d) => (
                           <div
                             key={d.id}
-                            className="flex items-center justify-between text-xs text-stone-600 dark:text-stone-400"
+                            className="flex items-center justify-between text-xs text-slate-600 dark:text-slate-400"
                           >
                             <span className="font-medium text-foreground">
                               Dia {d.day_number}: {d.title}
@@ -374,7 +374,7 @@ function HomePage() {
               className="group relative flex flex-col justify-between rounded-2xl border border-border bg-card p-6 shadow-sm transition-all hover:border-primary/50 hover:shadow-md"
             >
               <div>
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400">
                   <CalendarDays className="h-5 w-5" />
                 </div>
                 <h3 className="mt-4 font-serif text-xl font-medium text-foreground group-hover:text-primary transition-colors">
@@ -417,7 +417,7 @@ function HomePage() {
               className="group relative flex flex-col justify-between rounded-2xl border border-border bg-card p-6 shadow-sm transition-all hover:border-primary/50 hover:shadow-md"
             >
               <div>
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-500/10 text-teal-600 dark:text-teal-400">
                   <Map className="h-5 w-5" />
                 </div>
                 <h3 className="mt-4 font-serif text-xl font-medium text-foreground group-hover:text-primary transition-colors">
@@ -460,7 +460,7 @@ function HomePage() {
               className="group relative flex flex-col justify-between rounded-2xl border border-border bg-card p-6 shadow-sm transition-all hover:border-primary/50 hover:shadow-md"
             >
               <div>
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-500/10 text-teal-600 dark:text-teal-400">
                   <Star className="h-5 w-5" />
                 </div>
                 <h3 className="mt-4 font-serif text-xl font-medium text-foreground group-hover:text-primary transition-colors">
@@ -482,7 +482,7 @@ function HomePage() {
               className="group relative flex flex-col justify-between rounded-2xl border border-border bg-card p-6 shadow-sm transition-all hover:border-primary/50 hover:shadow-md"
             >
               <div>
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400">
                   <Compass className="h-5 w-5" />
                 </div>
                 <h3 className="mt-4 font-serif text-xl font-medium text-foreground group-hover:text-primary transition-colors">
@@ -503,7 +503,7 @@ function HomePage() {
               className="group relative flex flex-col justify-between rounded-2xl border border-border bg-card p-6 shadow-sm transition-all hover:border-primary/50 hover:shadow-md"
             >
               <div>
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
                   <BookImage className="h-5 w-5" />
                 </div>
                 <h3 className="mt-4 font-serif text-xl font-medium text-foreground group-hover:text-primary transition-colors">

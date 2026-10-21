@@ -19,10 +19,10 @@ import { input, label } from "./styles";
 import type { TripUpdate } from "./types";
 
 const ICONS: Record<TripReservation["type"], React.ReactNode> = {
-  flight: <Plane className="h-5 w-5 text-blue-500" />,
-  hotel: <Building className="h-5 w-5 text-amber-500" />,
-  ticket: <Ticket className="h-5 w-5 text-emerald-500" />,
-  transport: <Compass className="h-5 w-5 text-purple-500" />,
+  flight: <Plane className="h-5 w-5 text-primary" />,
+  hotel: <Building className="h-5 w-5 text-sky-600" />,
+  ticket: <Ticket className="h-5 w-5 text-forest" />,
+  transport: <Compass className="h-5 w-5 text-indigo-400" />,
 };
 
 export function ReservationsTab({ trip, update }: { trip: TripPlan; update: TripUpdate }) {

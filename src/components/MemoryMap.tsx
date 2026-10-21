@@ -21,7 +21,7 @@ type Props = {
   wishes?: { id: string; place: string; lat: number | null; lng: number | null }[];
 };
 
-const ROUTE_COLORS = ["#c4654a", "#4a6741", "#e8a87c", "#87a878", "#8b6f5e"];
+const ROUTE_COLORS = ["#386a86", "#2f6050", "#6d9dc5", "#85b09c", "#5b7f95"];
 // Stable defaults, so the map doesn't re-fit itself on every parent render.
 const NO_PINS: Pin[] = [];
 const NO_WISHES: NonNullable<Props["wishes"]> = [];
@@ -121,7 +121,7 @@ export function MemoryMap({
 
       const marker = L.circleMarker(latlng, {
         radius: 8,
-        fillColor: "#c4654a",
+        fillColor: "#386a86",
         color: "#ffffff",
         weight: 2.5,
         fillOpacity: 0.95,
@@ -143,7 +143,7 @@ export function MemoryMap({
 
       const marker = L.circleMarker(latlng, {
         radius: 7,
-        fillColor: "#4a6741",
+        fillColor: "#2f6050",
         color: "#ffffff",
         weight: 2,
         fillOpacity: 0.9,
@@ -186,7 +186,7 @@ export function MemoryMap({
 
       const pickedMarker = L.circleMarker(pickedLatLng, {
         radius: 10,
-        fillColor: "#2563eb",
+        fillColor: "#1f4e6b",
         color: "#ffffff",
         weight: 3,
         fillOpacity: 1,

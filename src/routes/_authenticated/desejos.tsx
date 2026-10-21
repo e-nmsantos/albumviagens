@@ -343,7 +343,7 @@ function WishBody({
       <div className="mt-auto flex items-center gap-2 pt-5">
         <button
           onClick={onToggle}
-          className="inline-flex items-center gap-1.5 rounded-full bg-sage px-4 py-2 text-sm text-primary-foreground hover:opacity-90"
+          className="inline-flex items-center gap-1.5 rounded-full bg-forest px-4 py-2 text-sm text-primary-foreground hover:opacity-90"
         >
           <Check className="h-4 w-4" />
           Já fui!

@@ -67,7 +67,7 @@ export function PackingTab({ trip, update }: { trip: TripPlan; update: TripUpdat
           </div>
           <div className="h-2.5 w-full overflow-hidden rounded-full bg-secondary">
             <div
-              className="h-full bg-emerald-500 transition-all duration-300"
+              className="h-full bg-sage transition-all duration-300"
               style={{ width: `${pct}%` }}
             />
           </div>
