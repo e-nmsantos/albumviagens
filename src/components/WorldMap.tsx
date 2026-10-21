@@ -2,17 +2,17 @@ import { useMemo, useState } from "react";
 import { geoBounds, geoNaturalEarth1, geoPath } from "d3-geo";
 import type { Feature, FeatureCollection, Geometry } from "geojson";
 import { countries } from "@/lib/world";
-import { visitedOf, type Country, type Dot, type Place } from "@/lib/visited";
+import { visitedOf, type Dot, type Painted, type Place } from "@/lib/visited";
 import { plural } from "@/lib/utils";
 
 const W = 960,
   H = 500;
 
 /** A projection framing the visited places with some context, or the whole world. */
-function framing(painted: Set<Country>, dots: Dot[]) {
+function framing(painted: Painted[], dots: Dot[]) {
   const world = geoNaturalEarth1().fitSize([W, H], { type: "Sphere" });
   const shapes: Feature<Geometry>[] = [
-    ...painted,
+    ...painted.map((p) => p.shape as Feature<Geometry>),
     ...dots.map((d) => ({
       type: "Feature" as const,
       properties: {},
@@ -56,7 +56,7 @@ export function WorldMap({ places }: { places: Place[] }) {
     [whole, painted, dots],
   );
   const path = geoPath(projection);
-  const total = painted.size + dots.length;
+  const total = painted.length + dots.length;
 
   return (
     <div className="polaroid">
@@ -68,13 +68,20 @@ export function WorldMap({ places }: { places: Place[] }) {
       >
         <rect width={W} height={H} className="fill-muted" />
         {countries.map((c, i) => (
-          <path
-            key={i}
-            d={path(c) ?? ""}
-            className={painted.has(c) ? "fill-primary stroke-card" : "fill-card stroke-border"}
-            strokeWidth={0.5}
-          >
+          <path key={i} d={path(c) ?? ""} className="fill-card stroke-border" strokeWidth={0.5}>
             <title>{c.properties.name}</title>
+          </path>
+        ))}
+        {/* Visited countries on top, without far-away territories nobody went to. */}
+        {painted.map((p) => (
+          <path
+            key={String(p.country.id)}
+            d={path(p.shape) ?? ""}
+            className="fill-primary stroke-card"
+            strokeWidth={0.5}
+            data-visited={p.country.properties.name}
+          >
+            <title>{p.country.properties.name}</title>
           </path>
         ))}
         {dots.map((d) => {
