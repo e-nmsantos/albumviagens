@@ -5,6 +5,7 @@ import { MemoryMap } from "@/components/MemoryMap";
 import { PhotoOrganizer } from "@/components/PhotoOrganizer";
 import { geocodePlace, type LatLng } from "@/lib/geocode";
 import { writeStory } from "@/lib/ai.functions";
+import { MAX_NOTES } from "@/lib/ai-text";
 import {
   memoryDate,
   monthEnd,
@@ -110,13 +111,22 @@ export function MemoryForm({
           title,
           place,
           date: date ? memoryDate({ date, date_precision: precision }) : "",
-          notes: text,
+          notes: text.slice(0, MAX_NOTES),
           photos: thumbs.filter(Boolean),
         },
       });
-      setText(r.text);
-      if (r.source === "ai") toast.success("Texto escrito — ajusta-o à tua maneira.");
-      else toast("Nenhum serviço de IA respondeu; deixei um rascunho simples para completar.");
+      if (r.source === "ai") {
+        setText(r.text);
+        toast.success("Texto escrito — ajusta-o à tua maneira.");
+      } else if (text.trim()) {
+        // Never replace what the person wrote with the plain draft.
+        toast(
+          "Nenhum serviço de IA respondeu agora. O teu texto ficou como estava; tenta daqui a pouco.",
+        );
+      } else {
+        setText(r.text);
+        toast("Nenhum serviço de IA respondeu; deixei um rascunho simples para completar.");
+      }
     } catch (e) {
       toast.error(errorMessage(e, "Não foi possível escrever o texto."));
     } finally {

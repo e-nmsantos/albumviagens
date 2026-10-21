@@ -36,7 +36,7 @@ export function ItineraryTab({
           destination: trip.destination,
           title: trip.title,
           dates: tripDatesLabel(trip),
-          existing: trip.days.map((d) => d.title),
+          existing: trip.days.slice(-60).map((d) => d.title.slice(0, 200)),
         },
       });
       const days: Omit<ItineraryDay, "id">[] = [];

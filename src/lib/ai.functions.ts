@@ -1,12 +1,12 @@
 import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
 import {
-  PHOTO_DATA_URL,
   STOPS_SYSTEM,
   STORY_SYSTEM,
   cleanStory,
   parseStops,
+  stopsInputSchema,
   stopsPrompt,
+  storyInputSchema,
   storyPrompt,
   templateStops,
   templateStory,
@@ -17,17 +17,7 @@ export type AISource = "ai" | "template";
 
 /** Drafts a memory story (pt-PT) from title, place, notes and up to 4 small photos. */
 export const writeStory = createServerFn({ method: "POST" })
-  .inputValidator((i) =>
-    z
-      .object({
-        title: z.string().max(200),
-        place: z.string().max(200),
-        date: z.string().max(20),
-        notes: z.string().max(4000),
-        photos: z.array(z.string().max(400_000).regex(PHOTO_DATA_URL)).max(4),
-      })
-      .parse(i),
-  )
+  .inputValidator((i) => storyInputSchema.parse(i))
   .handler(async ({ data }): Promise<{ text: string; source: AISource }> => {
     const allowPaid = await mayUsePaidAI();
     const out = await complete({
@@ -45,16 +35,7 @@ export const writeStory = createServerFn({ method: "POST" })
 
 /** Suggests three itinerary stops for a trip. */
 export const suggestStops = createServerFn({ method: "POST" })
-  .inputValidator((i) =>
-    z
-      .object({
-        destination: z.string().min(1).max(200),
-        title: z.string().max(200),
-        dates: z.string().max(100),
-        existing: z.array(z.string().max(200)).max(60),
-      })
-      .parse(i),
-  )
+  .inputValidator((i) => stopsInputSchema.parse(i))
   .handler(async ({ data }) => {
     const out = await complete({
       system: STOPS_SYSTEM,

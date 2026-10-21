@@ -136,3 +136,23 @@ export function templateStops(destination: string): Stop[] {
 }
 
 export const PHOTO_DATA_URL = /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/;
+
+/** Longest notes sent to the AI; longer stories are cut before sending. */
+export const MAX_NOTES = 4000;
+
+/** What the story writer accepts. `date` is the date as written for people ("junho de 2025"). */
+export const storyInputSchema = z.object({
+  title: z.string().max(200),
+  place: z.string().max(200),
+  date: z.string().max(60),
+  notes: z.string().max(MAX_NOTES),
+  photos: z.array(z.string().max(400_000).regex(PHOTO_DATA_URL)).max(4),
+});
+
+/** What the itinerary suggester accepts. */
+export const stopsInputSchema = z.object({
+  destination: z.string().min(1).max(200),
+  title: z.string().max(200),
+  dates: z.string().max(100),
+  existing: z.array(z.string().max(200)).max(60),
+});

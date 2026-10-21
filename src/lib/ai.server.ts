@@ -39,7 +39,9 @@ export type AIRequest = {
   allowPaid: boolean;
 };
 
-const TIMEOUT = 30_000;
+// Paid models can take a while on long texts; the free service answers fast or not at all.
+const TIMEOUT = 60_000;
+const FREE_TIMEOUT = 30_000;
 
 function splitDataUrl(url: string) {
   const [head = "", data = ""] = url.split(",");
@@ -122,7 +124,7 @@ async function pollinations(r: AIRequest, retry = true): Promise<string | null> 
         { role: "user", content: r.textPrompt ?? r.prompt },
       ],
     }),
-    signal: AbortSignal.timeout(TIMEOUT),
+    signal: AbortSignal.timeout(FREE_TIMEOUT),
   });
   if ((res.status === 402 || res.status === 429) && retry) {
     await wait(6000);
