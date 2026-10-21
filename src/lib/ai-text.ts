@@ -24,9 +24,9 @@ export function storyPrompt(s: StoryInput, photoCount: number) {
     .join("\n");
 }
 
-/** Strips wrapping quotes and a repeated title from a model's answer. */
+/** Strips stray leading punctuation, wrapping quotes and a repeated title from a model's answer. */
 export function cleanStory(text: string, title?: string): string {
-  let t = text.trim();
+  let t = text.trim().replace(/^[^\p{L}"“]+/u, "");
   if (t.startsWith('"') && t.endsWith('"')) t = t.slice(1, -1).trim();
   if (title && t.toLowerCase().startsWith(title.toLowerCase())) {
     t = t

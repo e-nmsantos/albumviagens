@@ -24,9 +24,15 @@ export default defineConfig(({ command, mode }) => {
         server: { entry: "server" },
         importProtection: { behavior: "error", client: { specifiers: ["server-only"] } },
       }),
-      // Production server: `npm run build` → `npm start` (Node). Set NITRO_PRESET for other hosts.
+      // Production server: Vercel when building there, otherwise Node (`npm run build` → `npm start`).
+      // NITRO_PRESET picks another host.
       ...(command === "build"
-        ? [nitro({ preset: process.env["NITRO_PRESET"] || "node-server" })]
+        ? [
+            nitro({
+              preset:
+                process.env["NITRO_PRESET"] || (process.env["VERCEL"] ? "vercel" : "node-server"),
+            }),
+          ]
         : []),
       viteReact(),
     ],

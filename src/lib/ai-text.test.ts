@@ -4,6 +4,7 @@ import { PHOTO_DATA_URL, cleanStory, parseStops, templateStory } from "@/lib/ai-
 describe("AI text helpers", () => {
   it("cleans quotes and a repeated title from a story", () => {
     expect(cleanStory('"Sintra: um dia de nevoeiro."', "Sintra")).toBe("um dia de nevoeiro.");
+    expect(cleanStory(". O sol começa a mergulhar.")).toBe("O sol começa a mergulhar.");
   });
 
   it("reads the stops array even with text around it", () => {

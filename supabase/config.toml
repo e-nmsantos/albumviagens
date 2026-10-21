@@ -2,8 +2,12 @@ project_id = "memorias"
 
 [auth]
 # Where links in sign-up and password emails send people back to.
-site_url = "http://localhost:8080"
-additional_redirect_urls = ["http://localhost:8080/**", "http://127.0.0.1:8080/**"]
+site_url = "https://memorias-tau.vercel.app"
+additional_redirect_urls = [
+  "https://memorias-tau.vercel.app/**",
+  "http://localhost:8080/**",
+  "http://127.0.0.1:8080/**",
+]
 minimum_password_length = 6
 
 [auth.email]

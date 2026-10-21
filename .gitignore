@@ -32,3 +32,6 @@ dist-ssr
 
 # Supabase CLI local state
 supabase/.temp/
+
+# Vercel (build output and project link)
+.vercel/
