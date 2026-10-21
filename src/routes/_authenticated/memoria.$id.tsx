@@ -91,7 +91,7 @@ function Detail() {
       <article className="mx-auto max-w-3xl px-6 pb-24">
         <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
           <Link to="/diario" className="text-muted-foreground hover:text-foreground">
-            ← Diário
+            ← Memórias
           </Link>
           <div className="flex gap-4">
             <Link

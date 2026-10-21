@@ -50,7 +50,7 @@ function Stats() {
     {
       n: ms.length,
       l: ms.length === 1 ? "memória" : "memórias",
-      hint: "momentos guardados no diário",
+      hint: "momentos guardados",
     },
     {
       n: trips,

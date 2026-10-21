@@ -16,9 +16,9 @@ import { plural } from "@/lib/utils";
 export const Route = createFileRoute("/_authenticated/diario")({
   head: () => ({
     meta: [
-      { title: "O meu diário — Fica na Memória" },
+      { title: "As minhas memórias — Fica na Memória" },
       { name: "description", content: "Todas as tuas memórias de viagem num mosaico de fotos." },
-      { property: "og:title", content: "O meu diário — Fica na Memória" },
+      { property: "og:title", content: "As minhas memórias — Fica na Memória" },
       { property: "og:description", content: "Todas as tuas memórias de viagem." },
     ],
   }),
@@ -139,7 +139,7 @@ function Diary() {
         )}
       </section>
       <main className="mx-auto max-w-6xl px-6 pb-24">
-        {isLoading && <p className="text-muted-foreground">A abrir o diário…</p>}
+        {isLoading && <p className="text-muted-foreground">A abrir as memórias…</p>}
         {!isLoading && all.length === 0 && (
           <p className="py-20 text-center text-muted-foreground">
             Ainda sem memórias.{" "}
@@ -262,7 +262,7 @@ function ImportLocal() {
         onClick={run}
         className="rounded-full bg-primary px-4 py-2 text-primary-foreground disabled:opacity-50"
       >
-        {busy ? "A importar…" : "Importar para o diário"}
+        {busy ? "A importar…" : "Importar para as memórias"}
       </button>
       <button onClick={() => forget([])} className="text-muted-foreground hover:text-foreground">
         Ignorar

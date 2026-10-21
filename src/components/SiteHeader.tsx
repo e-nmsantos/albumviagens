@@ -25,27 +25,21 @@ import { HOME, features } from "@/lib/features";
 type NavLink = { to: string; label: string; icon: typeof Map; on: boolean };
 const shown = (list: NavLink[]) => list.filter((l) => l.on);
 
+// The menu order. Hidden sections (see src/lib/features.ts) keep a sensible place for later.
 const links = shown([
   { to: "/", label: "Início", icon: Compass, on: features.home },
-  { to: "/planeador", label: "Planeador", icon: CalendarDays, on: features.planner },
-  { to: "/diario", label: "Diário", icon: BookOpen, on: true },
+  { to: "/diario", label: "Memórias", icon: BookOpen, on: true },
+  { to: "/album", label: "Álbum", icon: BookImage, on: true },
+  { to: "/linha-do-tempo", label: "Tempo", icon: Clock, on: true },
   { to: "/passaporte", label: "Passaporte", icon: Globe, on: true },
   { to: "/mapa", label: "Mapa", icon: Map, on: true },
-  { to: "/linha-do-tempo", label: "Tempo", icon: Clock, on: true },
-  { to: "/desejos", label: "Desejos", icon: Star, on: features.wishes },
-  { to: "/album", label: "Álbum", icon: BookImage, on: true },
   { to: "/estatisticas", label: "Números", icon: BarChart3, on: true },
+  { to: "/planeador", label: "Planeador", icon: CalendarDays, on: features.planner },
+  { to: "/desejos", label: "Desejos", icon: Star, on: features.wishes },
 ]);
 
-// Mobile: four tabs around the "+" button; everything else goes in the row under the header.
-const tabs = shown([
-  { to: "/", label: "Início", icon: Compass, on: features.home },
-  { to: "/planeador", label: "Planos", icon: CalendarDays, on: features.planner },
-  { to: "/diario", label: "Diário", icon: BookOpen, on: true },
-  { to: "/mapa", label: "Mapa", icon: Map, on: true },
-  { to: "/passaporte", label: "Passaporte", icon: Globe, on: true },
-  { to: "/album", label: "Álbum", icon: BookImage, on: true },
-]).slice(0, 4);
+// Mobile: the first four go around the "+" button; the rest in the row under the header.
+const tabs = links.slice(0, 4);
 const moreLinks = links.filter((l) => !tabs.some((t) => t.to === l.to));
 
 export function SiteHeader() {
