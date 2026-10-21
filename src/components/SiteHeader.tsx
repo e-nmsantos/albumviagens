@@ -22,26 +22,33 @@ import {
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/use-auth";
 import { BackupDialog } from "@/components/BackupDialog";
+import { HOME, features } from "@/lib/features";
 
-const links = [
-  { to: "/", label: "Início" },
-  { to: "/planeador", label: "Planeador" },
-  { to: "/diario", label: "Diário" },
-  { to: "/passaporte", label: "Passaporte" },
-  { to: "/mapa", label: "Mapa" },
-  { to: "/linha-do-tempo", label: "Tempo" },
-  { to: "/desejos", label: "Desejos" },
-  { to: "/album", label: "Álbum" },
-  { to: "/estatisticas", label: "Números" },
-] as const;
+type NavLink = { to: string; label: string; icon: typeof Map; on: boolean };
+const shown = (list: NavLink[]) => list.filter((l) => l.on);
 
-const moreLinks = [
-  { to: "/mapa", label: "Mapa", icon: Map },
-  { to: "/linha-do-tempo", label: "Tempo", icon: Clock },
-  { to: "/desejos", label: "Desejos", icon: Star },
-  { to: "/album", label: "Álbum", icon: BookImage },
-  { to: "/estatisticas", label: "Números", icon: BarChart3 },
-] as const;
+const links = shown([
+  { to: "/", label: "Início", icon: Compass, on: features.home },
+  { to: "/planeador", label: "Planeador", icon: CalendarDays, on: features.planner },
+  { to: "/diario", label: "Diário", icon: BookOpen, on: true },
+  { to: "/passaporte", label: "Passaporte", icon: Globe, on: true },
+  { to: "/mapa", label: "Mapa", icon: Map, on: true },
+  { to: "/linha-do-tempo", label: "Tempo", icon: Clock, on: true },
+  { to: "/desejos", label: "Desejos", icon: Star, on: features.wishes },
+  { to: "/album", label: "Álbum", icon: BookImage, on: true },
+  { to: "/estatisticas", label: "Números", icon: BarChart3, on: true },
+]);
+
+// Mobile: four tabs around the "+" button; everything else goes in the row under the header.
+const tabs = shown([
+  { to: "/", label: "Início", icon: Compass, on: features.home },
+  { to: "/planeador", label: "Planos", icon: CalendarDays, on: features.planner },
+  { to: "/diario", label: "Diário", icon: BookOpen, on: true },
+  { to: "/mapa", label: "Mapa", icon: Map, on: true },
+  { to: "/passaporte", label: "Carimbos", icon: Globe, on: true },
+  { to: "/album", label: "Álbum", icon: BookImage, on: true },
+]).slice(0, 4);
+const moreLinks = links.filter((l) => !tabs.some((t) => t.to === l.to));
 
 export function SiteHeader() {
   const qc = useQueryClient();
@@ -59,7 +66,7 @@ export function SiteHeader() {
     await qc.cancelQueries();
     qc.clear();
     toast("Sessão terminada. Estás agora no modo local deste dispositivo.");
-    nav({ to: "/", replace: true });
+    nav({ to: HOME, replace: true });
   }
 
   const mode = ready && (
@@ -94,7 +101,7 @@ export function SiteHeader() {
     <>
       <header className="sticky top-0 z-30 border-b border-border/60 bg-background/85 backdrop-blur print:hidden">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
-          <Link to="/" className="group flex items-center gap-2">
+          <Link to={HOME} className="group flex items-center gap-2">
             <span className="font-display text-3xl italic text-foreground transition-colors group-hover:text-primary">
               Memórias
             </span>
@@ -158,40 +165,34 @@ export function SiteHeader() {
       </header>
 
       <nav className="fixed inset-x-0 bottom-0 z-40 flex items-end border-t border-border bg-card/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden print:hidden">
-        <Link
-          to="/"
-          className={tab}
-          activeOptions={{ exact: true }}
-          activeProps={{ className: "!text-primary font-medium" }}
-        >
-          <Compass className="h-5 w-5" />
-          <span>Início</span>
-        </Link>
-        <Link
-          to="/planeador"
-          className={tab}
-          activeProps={{ className: "!text-primary font-medium" }}
-        >
-          <CalendarDays className="h-5 w-5" />
-          <span>Planos</span>
-        </Link>
+        {tabs.slice(0, 2).map((t) => (
+          <Link
+            key={t.to}
+            to={t.to}
+            className={tab}
+            activeOptions={{ exact: t.to === "/" }}
+            activeProps={{ className: "!text-primary font-medium" }}
+          >
+            <t.icon className="h-5 w-5" />
+            <span>{t.label}</span>
+          </Link>
+        ))}
         <Link to="/nova" aria-label="Nova memória" className="-mt-6 flex flex-1 justify-center">
           <span className="grid h-14 w-14 place-items-center rounded-full bg-primary text-primary-foreground shadow-lg ring-4 ring-background">
             <Plus className="h-7 w-7" />
           </span>
         </Link>
-        <Link
-          to="/passaporte"
-          className={tab}
-          activeProps={{ className: "!text-primary font-medium" }}
-        >
-          <Globe className="h-5 w-5" />
-          <span>Carimbos</span>
-        </Link>
-        <Link to="/diario" className={tab} activeProps={{ className: "!text-primary font-medium" }}>
-          <BookOpen className="h-5 w-5" />
-          <span>Diário</span>
-        </Link>
+        {tabs.slice(2).map((t) => (
+          <Link
+            key={t.to}
+            to={t.to}
+            className={tab}
+            activeProps={{ className: "!text-primary font-medium" }}
+          >
+            <t.icon className="h-5 w-5" />
+            <span>{t.label}</span>
+          </Link>
+        ))}
       </nav>
       <div className="h-4 md:h-6 print:hidden" />
 

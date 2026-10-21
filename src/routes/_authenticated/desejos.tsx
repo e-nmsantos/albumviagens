@@ -1,4 +1,5 @@
-import { createFileRoute, ClientOnly, Link } from "@tanstack/react-router";
+import { createFileRoute, notFound, ClientOnly, Link } from "@tanstack/react-router";
+import { features } from "@/lib/features";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Check, Trash2, Star, CalendarDays, Pencil, Plane, Undo2 } from "lucide-react";
@@ -13,6 +14,9 @@ import { useWishes, useWishMutations, type Wish } from "@/lib/wishes";
 import { plural } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/desejos")({
+  beforeLoad: () => {
+    if (!features.wishes) throw notFound();
+  },
   head: () => ({
     meta: [
       { title: "Lista de desejos — Memórias" },

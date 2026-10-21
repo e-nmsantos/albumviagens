@@ -1,17 +1,22 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { CloudUpload, Download, ShieldCheck, Upload } from "lucide-react";
 import { LOCAL_SCOPE, useAuth } from "@/hooks/use-auth";
 import { buildBackup, parseBackup, restoreBackup, type RestoreResult } from "@/lib/backup";
 import { errorMessage } from "@/lib/errors";
+import { features } from "@/lib/features";
 
 const box = "rounded-xl border border-border bg-muted/30 p-4";
 const btn =
   "mt-3 inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold shadow disabled:opacity-50";
 
 function summary(r: RestoreResult) {
-  const parts = [`${r.memories} memórias`, `${r.wishes} desejos`, `${r.trips} viagens`];
+  const parts = [
+    `${r.memories} memórias`,
+    ...(features.wishes ? [`${r.wishes} desejos`] : []),
+    ...(features.planner ? [`${r.trips} viagens`] : []),
+  ];
   const missing = r.missingPhotos ? ` (${r.missingPhotos} fotos não vinham no ficheiro)` : "";
   return parts.join(", ") + missing;
 }
@@ -21,6 +26,12 @@ export function BackupDialog({ onClose }: { onClose: () => void }) {
   const { user, scope } = useAuth();
   const [progress, setProgress] = useState<string | null>(null);
   const busy = progress !== null;
+
+  useEffect(() => {
+    const k = (e: KeyboardEvent) => e.key === "Escape" && !busy && onClose();
+    window.addEventListener("keydown", k);
+    return () => window.removeEventListener("keydown", k);
+  }, [busy, onClose]);
   const onProgress = (label: string) => (done: number, total: number) =>
     setProgress(`${label} ${done}/${total}…`);
 
@@ -109,7 +120,11 @@ export function BackupDialog({ onClose }: { onClose: () => void }) {
               Exportar
             </h4>
             <p className="mt-1 text-xs text-muted-foreground">
-              Um ficheiro .json com memórias, desejos, viagens e todas as fotos.
+              Um ficheiro .json com{" "}
+              {features.planner || features.wishes ? "memórias, " : "as memórias e "}
+              {features.wishes && "desejos, "}
+              {features.planner && "viagens planeadas e "}
+              todas as fotos.
             </p>
             <button
               disabled={busy}

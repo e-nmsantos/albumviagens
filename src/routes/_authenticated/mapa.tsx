@@ -5,6 +5,7 @@ import { MemoryMap } from "@/components/MemoryMap";
 import { tripNames, useMemories } from "@/lib/memories";
 import { plural } from "@/lib/utils";
 import { useWishes } from "@/lib/wishes";
+import { features } from "@/lib/features";
 
 export const Route = createFileRoute("/_authenticated/mapa")({
   head: () => ({
@@ -24,7 +25,8 @@ export const Route = createFileRoute("/_authenticated/mapa")({
 function MapPage() {
   const { data: items = [] } = useMemories();
   const nav = useNavigate();
-  const { data: wishes = [] } = useWishes();
+  const { data: allWishes = [] } = useWishes();
+  const wishes = features.wishes ? allWishes : [];
   const [showWishes, setShowWishes] = useState(true);
   const [trip, setTrip] = useState("");
   const trips = tripNames(items);
@@ -41,18 +43,20 @@ function MapPage() {
             </h1>
             <p className="mt-2 text-muted-foreground">
               {plural(count, "lugar marcado", "lugares marcados")}. Toca num ponto para abrir a
-              memória. As linhas mostram o percurso de cada viagem; os pontos verdes são lugares que
-              queres visitar.
+              memória. As linhas mostram o percurso de cada viagem
+              {features.wishes && "; os pontos verdes são lugares que queres visitar"}.
             </p>
-            <label className="mt-3 inline-flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                checked={showWishes}
-                onChange={(e) => setShowWishes(e.target.checked)}
-                className="accent-primary"
-              />
-              Mostrar a lista de desejos
-            </label>
+            {features.wishes && (
+              <label className="mt-3 inline-flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={showWishes}
+                  onChange={(e) => setShowWishes(e.target.checked)}
+                  className="accent-primary"
+                />
+                Mostrar a lista de desejos
+              </label>
+            )}
           </div>
           {trips.length > 0 && (
             <select

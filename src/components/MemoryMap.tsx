@@ -211,7 +211,8 @@ export function MemoryMap({
     <div
       ref={containerRef}
       className={className ?? "h-80 w-full rounded-xl"}
-      style={{ minHeight: "260px" }}
+      // Leaflet stacks its layers up to z-index 1000; isolate them so menus stay on top.
+      style={{ minHeight: "260px", isolation: "isolate" }}
     />
   );
 }

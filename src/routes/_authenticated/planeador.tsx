@@ -1,4 +1,5 @@
-import { createFileRoute, ClientOnly, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, notFound, ClientOnly, useNavigate } from "@tanstack/react-router";
+import { features } from "@/lib/features";
 import { useCallback, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -33,6 +34,9 @@ import { deletePhotos, usePhotoUrls } from "@/lib/photos";
 import { tripPhotos, useTripMutations, useTrips, type TripPlan } from "@/lib/trips";
 
 export const Route = createFileRoute("/_authenticated/planeador")({
+  beforeLoad: () => {
+    if (!features.planner) throw notFound();
+  },
   validateSearch: z.object({ trip: z.string().optional() }),
   head: () => ({
     meta: [

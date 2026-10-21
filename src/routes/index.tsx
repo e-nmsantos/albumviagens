@@ -1,4 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
+import { features } from "@/lib/features";
 import {
   CalendarDays,
   MapPin,
@@ -25,6 +26,9 @@ import { plural } from "@/lib/utils";
 const tripCover = (t: TripPlan) => t.days.find((d) => d.photo)?.photo;
 
 export const Route = createFileRoute("/")({
+  beforeLoad: () => {
+    if (!features.home) throw redirect({ to: "/diario", replace: true });
+  },
   ssr: false,
   head: () => ({
     meta: [
