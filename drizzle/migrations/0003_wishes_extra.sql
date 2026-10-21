@@ -1,0 +1,1 @@
+ALTER TABLE public.wishes ADD COLUMN IF NOT EXISTS when_text text NOT NULL DEFAULT '', ADD COLUMN IF NOT EXISTS priority smallint NOT NULL DEFAULT 2;

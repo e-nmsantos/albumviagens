@@ -1,0 +1,82 @@
+import { createFileRoute, ClientOnly, useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
+import { SiteHeader } from "@/components/SiteHeader";
+import { MemoryMap } from "@/components/MemoryMap";
+import { tripNames, useMemories } from "@/lib/memories";
+import { useWishes } from "@/lib/wishes";
+
+export const Route = createFileRoute("/_authenticated/mapa")({
+  head: () => ({
+    meta: [
+      { title: "Mapa de viagens — Memórias" },
+      {
+        name: "description",
+        content: "Todos os lugares por onde passou, num só mapa, com o percurso de cada viagem.",
+      },
+      { property: "og:title", content: "Mapa de viagens — Memórias" },
+      { property: "og:description", content: "Todos os lugares por onde passou, num só mapa." },
+    ],
+  }),
+  component: MapPage,
+});
+
+function MapPage() {
+  const { data: items = [] } = useMemories();
+  const nav = useNavigate();
+  const { data: wishes = [] } = useWishes();
+  const [showWishes, setShowWishes] = useState(true);
+  const [trip, setTrip] = useState("");
+  const trips = tripNames(items);
+  const shown = trip ? items.filter((m) => m.trip?.trim() === trip) : items;
+  const count = shown.filter((m) => m.lat != null).length;
+  return (
+    <div className="min-h-screen">
+      <SiteHeader />
+      <section className="mx-auto max-w-6xl px-6 pb-24">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <h1 className="text-5xl">
+              O mapa das <em className="text-primary">memórias</em>
+            </h1>
+            <p className="mt-2 text-muted-foreground">
+              {count} lugares marcados. Toque num ponto para abrir a memória. As linhas mostram o
+              percurso de cada viagem; as estrelas verdes são lugares que quer visitar.
+            </p>
+            <label className="mt-3 inline-flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={showWishes}
+                onChange={(e) => setShowWishes(e.target.checked)}
+                className="accent-primary"
+              />
+              Mostrar a lista de desejos
+            </label>
+          </div>
+          {trips.length > 0 && (
+            <select
+              value={trip}
+              onChange={(e) => setTrip(e.target.value)}
+              className="rounded-full border border-input bg-card px-4 py-2 text-sm"
+            >
+              <option value="">Todas as viagens</option>
+              {trips.map((t) => (
+                <option key={t}>{t}</option>
+              ))}
+            </select>
+          )}
+        </div>
+        <div className="polaroid mt-8">
+          <ClientOnly fallback={<div className="h-[70vh] bg-muted" />}>
+            <MemoryMap
+              memories={shown}
+              wishes={showWishes ? wishes.filter((w) => !w.done) : []}
+              showRoutes
+              className="h-[70vh] w-full bg-muted"
+              onSelect={(id) => nav({ to: "/memoria/$id", params: { id } })}
+            />
+          </ClientOnly>
+        </div>
+      </section>
+    </div>
+  );
+}

@@ -1,0 +1,4 @@
+CREATE POLICY "photos own read" ON storage.objects FOR SELECT TO authenticated USING (bucket_id = 'photos' AND (storage.foldername(name))[1] = auth.uid()::text);
+CREATE POLICY "photos own insert" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'photos' AND (storage.foldername(name))[1] = auth.uid()::text);
+CREATE POLICY "photos own delete" ON storage.objects FOR DELETE TO authenticated USING (bucket_id = 'photos' AND (storage.foldername(name))[1] = auth.uid()::text);
+CREATE POLICY "photos shared read" ON storage.objects FOR SELECT TO anon, authenticated USING (bucket_id = 'photos' AND EXISTS (SELECT 1 FROM public.memories m WHERE m.is_public AND storage.objects.name = ANY(m.photos)));
