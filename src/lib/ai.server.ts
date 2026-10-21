@@ -31,6 +31,8 @@ export type AIRequest = {
   prompt: string;
   /** JPEG/PNG/WebP data URLs; only sent to services that read images. */
   images?: string[];
+  /** The prompt for services that don't receive the images (it must not mention them). */
+  textPrompt?: string;
   json?: boolean;
   /** Allow the free public service (text only) when no paid key answers. */
   allowFree: boolean;
@@ -44,8 +46,11 @@ function splitDataUrl(url: string) {
   return { mime: head.slice(5, head.indexOf(";")), data };
 }
 
-async function gemini(key: string, r: AIRequest): Promise<string | null> {
-  const model = process.env["GEMINI_MODEL"] || "gemini-2.5-flash";
+const wait = (ms: number) => new Promise((s) => setTimeout(s, ms));
+
+/** Gemini answers 503/429 when busy; those are retried twice with a short pause. */
+async function gemini(key: string, r: AIRequest, tries = 3): Promise<string | null> {
+  const model = process.env["GEMINI_MODEL"] || "gemini-flash-latest";
   const parts: unknown[] = [{ text: r.prompt }];
   for (const img of r.images ?? []) {
     const { mime, data } = splitDataUrl(img);
@@ -64,6 +69,10 @@ async function gemini(key: string, r: AIRequest): Promise<string | null> {
       signal: AbortSignal.timeout(TIMEOUT),
     },
   );
+  if ((res.status === 503 || res.status === 429) && tries > 1) {
+    await wait(2500);
+    return gemini(key, r, tries - 1);
+  }
   if (!res.ok) throw new Error(`Gemini ${res.status}`);
   const j = (await res.json()) as {
     candidates?: { content?: { parts?: { text?: string }[] } }[];
@@ -83,7 +92,7 @@ async function openaiCompatible(
         { type: "text", text: r.prompt },
         ...(r.images ?? []).map((u) => ({ type: "image_url", image_url: { url: u } })),
       ]
-    : r.prompt;
+    : (r.textPrompt ?? r.prompt);
   const res = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
@@ -110,13 +119,13 @@ async function pollinations(r: AIRequest, retry = true): Promise<string | null> 
     body: JSON.stringify({
       messages: [
         { role: "system", content: r.system },
-        { role: "user", content: r.prompt },
+        { role: "user", content: r.textPrompt ?? r.prompt },
       ],
     }),
     signal: AbortSignal.timeout(TIMEOUT),
   });
   if ((res.status === 402 || res.status === 429) && retry) {
-    await new Promise((s) => setTimeout(s, 6000));
+    await wait(6000);
     return pollinations(r, false);
   }
   if (!res.ok) throw new Error(`Pollinations ${res.status}: ${(await res.text()).slice(0, 200)}`);

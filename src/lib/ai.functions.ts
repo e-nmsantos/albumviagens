@@ -33,6 +33,7 @@ export const writeStory = createServerFn({ method: "POST" })
     const out = await complete({
       system: STORY_SYSTEM,
       prompt: storyPrompt(data, allowPaid ? data.photos.length : 0),
+      textPrompt: storyPrompt(data, 0),
       images: data.photos,
       allowPaid,
       allowFree: true,
