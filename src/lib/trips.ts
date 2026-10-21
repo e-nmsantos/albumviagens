@@ -1,6 +1,6 @@
 import { queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import type { Json } from "@/integrations/supabase/types";
+import { supabase } from "@/lib/supabase";
+import type { Json } from "@/lib/database.types";
 import { currentScope, isCloud, useAuth, type Scope } from "@/hooks/use-auth";
 import { cloudError } from "@/lib/cloud";
 import { localDB } from "@/lib/local-db";

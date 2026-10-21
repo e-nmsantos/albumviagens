@@ -1,15 +1,18 @@
 // Server-only helpers for the AI features: who is asking, and which AI service answers.
 import { getRequest } from "@tanstack/react-start/server";
 import { createClient } from "@supabase/supabase-js";
+import { supabaseConfig, supabaseFetch } from "@/lib/supabase";
 
 /** Id of the signed-in user making this request, or null. */
 export async function requestUserId(): Promise<string | null> {
   const auth = getRequest()?.headers.get("authorization") ?? "";
   const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
-  const url = process.env["SUPABASE_URL"];
-  const key = process.env["SUPABASE_PUBLISHABLE_KEY"];
-  if (!token || token.split(".").length !== 3 || !url || !key) return null;
-  const sb = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
+  if (!token || token.split(".").length !== 3) return null;
+  const { url, key } = supabaseConfig();
+  const sb = createClient(url, key, {
+    global: { fetch: supabaseFetch(key) },
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
   const { data, error } = await sb.auth.getClaims(token);
   return error ? null : (data?.claims.sub ?? null);
 }

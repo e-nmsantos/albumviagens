@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from "react";
 import type { User } from "@supabase/supabase-js";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/supabase";
 
 /** Where data lives: "local" (this browser) or the signed-in user's id (Supabase). */
 export type Scope = string;

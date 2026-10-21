@@ -19,7 +19,7 @@ import {
   ShieldCheck,
   Star,
 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/use-auth";
 import { BackupDialog } from "@/components/BackupDialog";
 
