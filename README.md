@@ -41,7 +41,10 @@ depois entra na nova e **Backup → Restaurar**.
 
 ## Publicar
 
-A app está em **https://memorias-tau.vercel.app** (Vercel, plano gratuito). Para publicar uma versão nova:
+A app está em **https://memorias-tau.vercel.app** (Vercel, plano gratuito). O repositório está ligado
+à Vercel: **cada `git push` para `main` publica a versão nova** em cerca de um minuto.
+
+Para publicar à mão (sem passar pelo GitHub):
 
 ```sh
 NITRO_PRESET=vercel npm run build
