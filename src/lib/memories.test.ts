@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { countryOf, memoryDate, monthEnd, onThisDay, totalKm } from "./memories";
+import { moveItem } from "./utils";
 
 describe("memories helpers", () => {
   it("country is the last part of the place", () => {
@@ -44,5 +45,14 @@ describe("dates without a day", () => {
       today,
     );
     expect(r).toEqual([{ date: "2024-06-30", date_precision: "day" }]);
+  });
+});
+
+describe("photo order", () => {
+  it("moves a photo to another position", () => {
+    expect(moveItem(["a", "b", "c", "d"], 3, 0)).toEqual(["d", "a", "b", "c"]);
+    expect(moveItem(["a", "b", "c"], 0, 1)).toEqual(["b", "a", "c"]);
+    expect(moveItem(["a", "b", "c"], 2, 9)).toEqual(["a", "b", "c"]);
+    expect(moveItem(["a", "b"], 1, -1)).toEqual(["b", "a"]);
   });
 });

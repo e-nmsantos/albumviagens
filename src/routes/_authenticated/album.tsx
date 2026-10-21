@@ -56,6 +56,8 @@ type Settings = {
   bleed: boolean;
   title: string;
   dedication: string;
+  /** "auto" (first photo), "none", or the key of the chosen photo. */
+  cover: string;
 };
 const DEFAULTS: Settings = {
   format: "sq21",
@@ -66,6 +68,7 @@ const DEFAULTS: Settings = {
   bleed: false,
   title: "",
   dedication: "",
+  cover: "auto",
 };
 
 /** Remembers the album choices in this browser (a convenience; nothing breaks without it). */
@@ -183,6 +186,14 @@ function Album() {
   const { w, h } = FORMATS[s.format];
   const bleed = s.bleed ? 3 : 0;
 
+  // Cover: the chosen photo if it's still in the album, the first photo when automatic, or none.
+  const allPhotos = ms.flatMap((m) => m.photos);
+  const coverPhoto =
+    s.cover === "none"
+      ? null
+      : s.cover !== "auto" && allPhotos.includes(s.cover)
+        ? s.cover
+        : (allPhotos[0] ?? null);
   const first = ms[0]?.date;
   const last = ms[ms.length - 1]?.date;
   const ctx: BookContext = {
@@ -201,6 +212,7 @@ function Album() {
           : `${monthYear(first)} — ${monthYear(last)}`
         : "",
     dedication: s.dedication,
+    coverPhoto,
     ms,
     pages,
   };
@@ -442,6 +454,55 @@ function Album() {
         {/* 3. Text and print */}
         <section className="mt-6">
           <h2 className="text-2xl">4. Capa e impressão</h2>
+          <div className="mt-3">
+            <p className="text-sm">Foto da capa</p>
+            <div
+              className="mt-2 flex gap-2 overflow-x-auto pb-2"
+              role="radiogroup"
+              aria-label="Foto da capa"
+            >
+              {[
+                { id: "auto", label: "Automática", hint: "a primeira foto" },
+                { id: "none", label: "Sem foto", hint: "só o título" },
+              ].map((o) => {
+                const on =
+                  s.cover === o.id ||
+                  (o.id === "auto" && s.cover !== "none" && !allPhotos.includes(s.cover));
+                return (
+                  <button
+                    key={o.id}
+                    role="radio"
+                    aria-checked={on}
+                    onClick={() => set({ cover: o.id })}
+                    className={`flex h-20 w-24 shrink-0 flex-col items-center justify-center rounded-lg border text-center text-xs transition ${on ? "border-primary bg-primary/5 ring-2 ring-primary" : "border-input bg-card hover:border-primary"}`}
+                  >
+                    <span className="font-medium">{o.label}</span>
+                    <span className="text-[10px] text-muted-foreground">{o.hint}</span>
+                  </button>
+                );
+              })}
+              {allPhotos.map((p, i) => {
+                const on = s.cover === p;
+                return (
+                  <button
+                    key={p}
+                    role="radio"
+                    aria-checked={on}
+                    aria-label={`Usar a foto ${i + 1} na capa`}
+                    onClick={() => set({ cover: p })}
+                    className={`relative h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-muted transition ${on ? "ring-2 ring-primary ring-offset-2" : "opacity-80 hover:opacity-100"}`}
+                  >
+                    {urls[p] && <img src={urls[p]} alt="" className="h-full w-full object-cover" />}
+                    {on && (
+                      <span className="absolute right-1 top-1 grid h-5 w-5 place-items-center rounded-full bg-primary text-primary-foreground">
+                        <Check className="h-3 w-3" />
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
           <div className="mt-3 grid gap-3 md:grid-cols-[1fr_1fr_auto_auto]">
             <input
               value={s.title}

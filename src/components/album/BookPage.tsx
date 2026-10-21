@@ -16,6 +16,8 @@ export type BookContext = {
   title: string;
   subtitle: string;
   dedication: string;
+  /** The cover photo, or null for a cover without a photo. */
+  coverPhoto: string | null;
   ms: Memory[];
   pages: Page[];
 };
@@ -139,7 +141,7 @@ function Story({
 
 export function CoverPage({ ctx }: { ctx: BookContext }) {
   const t = THEMES[ctx.theme];
-  const hero = ctx.ms.find((m) => m.photos[0])?.photos[0];
+  const hero = ctx.coverPhoto ?? undefined;
   const src = hero ? ctx.urls[hero] : undefined;
 
   if (ctx.theme === "galeria") {

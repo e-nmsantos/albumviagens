@@ -2,6 +2,7 @@ import { ClientOnly, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { MemoryMap } from "@/components/MemoryMap";
+import { PhotoOrganizer } from "@/components/PhotoOrganizer";
 import { geocodePlace, type LatLng } from "@/lib/geocode";
 import { writeStory } from "@/lib/ai.functions";
 import {
@@ -316,22 +317,12 @@ export function MemoryForm({
             />
           </label>
           {photos.length > 0 && (
-            <div className="mt-3 grid grid-cols-4 gap-2">
-              {photos.map((p) => (
-                <button
-                  type="button"
-                  key={p}
-                  onClick={() => removePhoto(p)}
-                  title="Tirar esta foto"
-                  className="group relative aspect-square overflow-hidden rounded-sm bg-muted"
-                >
-                  {urls[p] && <img src={urls[p]} alt="" className="h-full w-full object-cover" />}
-                  <span className="absolute inset-0 hidden items-center justify-center bg-foreground/50 text-xl text-background group-hover:flex">
-                    ×
-                  </span>
-                </button>
-              ))}
-            </div>
+            <PhotoOrganizer
+              photos={photos}
+              urls={urls}
+              onChange={setPhotos}
+              onRemove={removePhoto}
+            />
           )}
         </div>
       </div>
