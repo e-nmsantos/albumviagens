@@ -51,6 +51,11 @@ function Detail() {
 
   const sameTrip = m.trip ? (data ?? []).filter((x) => x.trip === m.trip && x.id !== m.id) : [];
   const list = m.photos.map((p) => urls[p]).filter((u): u is string => !!u);
+  const [cover, ...rest] = m.photos;
+  // The diary lists newest first, so the next item there is the older memory.
+  const at = (data ?? []).findIndex((x) => x.id === m.id);
+  const older = data?.[at + 1];
+  const newer = at > 0 ? data?.[at - 1] : undefined;
   const shareUrl =
     typeof window !== "undefined" ? `${window.location.origin}/partilha/${m.id}` : "";
 
@@ -131,6 +136,18 @@ function Detail() {
             </button>
           </div>
         )}
+        {cover && (
+          <button
+            onClick={() => urls[cover] && setOpen(list.indexOf(urls[cover]))}
+            className="mt-6 block w-full cursor-zoom-in overflow-hidden rounded-2xl bg-muted shadow-lg"
+          >
+            {urls[cover] ? (
+              <img src={urls[cover]} alt={m.title} className="max-h-[65vh] w-full object-cover" />
+            ) : (
+              <div className="aspect-[4/3] w-full" />
+            )}
+          </button>
+        )}
         {m.trip && <p className="mt-8 text-xs uppercase tracking-[0.3em] text-forest">{m.trip}</p>}
         <p className="mt-2 text-xs uppercase tracking-[0.3em] text-primary">
           {m.place} · {formatDate(m.date)}
@@ -138,7 +155,7 @@ function Detail() {
         <h1 className="mt-3 text-5xl leading-tight md:text-6xl">{m.title}</h1>
         <p className="mt-6 whitespace-pre-line text-lg leading-relaxed">{m.text}</p>
         <div className="mt-10 columns-1 gap-4 sm:columns-2">
-          {m.photos.map(
+          {rest.map(
             (p, i) =>
               urls[p] && (
                 <button
@@ -146,7 +163,7 @@ function Detail() {
                   onClick={() => setOpen(list.indexOf(urls[p]!))}
                   className="polaroid mb-4 block w-full break-inside-avoid cursor-zoom-in"
                 >
-                  <img src={urls[p]} alt={`${m.title} ${i + 1}`} className="w-full" />
+                  <img src={urls[p]} alt={`${m.title} ${i + 2}`} className="w-full" />
                 </button>
               ),
           )}
@@ -167,6 +184,36 @@ function Detail() {
               ))}
             </ul>
           </section>
+        )}
+        {(older || newer) && (
+          <nav className="mt-12 grid grid-cols-2 gap-4 border-t border-border pt-6 text-sm">
+            {older ? (
+              <Link to="/memoria/$id" params={{ id: older.id }} className="group min-w-0">
+                <span className="text-xs uppercase tracking-widest text-muted-foreground">
+                  ← Mais antiga
+                </span>
+                <span className="block truncate font-display text-xl group-hover:text-primary">
+                  {older.title}
+                </span>
+              </Link>
+            ) : (
+              <span />
+            )}
+            {newer && (
+              <Link
+                to="/memoria/$id"
+                params={{ id: newer.id }}
+                className="group min-w-0 text-right"
+              >
+                <span className="text-xs uppercase tracking-widest text-muted-foreground">
+                  Mais recente →
+                </span>
+                <span className="block truncate font-display text-xl group-hover:text-primary">
+                  {newer.title}
+                </span>
+              </Link>
+            )}
+          </nav>
         )}
         <button
           onClick={remove}

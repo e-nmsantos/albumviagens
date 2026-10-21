@@ -19,6 +19,8 @@ type Props = {
   onSelect?: (id: string) => void;
   className?: string;
   wishes?: { id: string; place: string; lat: number | null; lng: number | null }[];
+  /** Where the map opens when there is nothing to show yet. */
+  start?: { lat: number; lng: number; zoom: number };
 };
 
 const ROUTE_COLORS = ["#386a86", "#2f6050", "#6d9dc5", "#85b09c", "#5b7f95"];
@@ -34,15 +36,17 @@ export function MemoryMap({
   picked,
   onSelect,
   className,
+  start,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<LType.Map | null>(null);
   const layerGroupRef = useRef<LType.LayerGroup | null>(null);
   const leafletRef = useRef<typeof LType | null>(null);
   const [ready, setReady] = useState(false);
+  const [touchHint, setTouchHint] = useState(false);
 
-  const propsRef = useRef({ onPick, onSelect, memories, wishes, picked, showRoutes });
-  propsRef.current = { onPick, onSelect, memories, wishes, picked, showRoutes };
+  const propsRef = useRef({ onPick, onSelect, memories, wishes, picked, showRoutes, start });
+  propsRef.current = { onPick, onSelect, memories, wishes, picked, showRoutes, start };
 
   useEffect(() => {
     let isMounted = true;
@@ -56,12 +60,17 @@ export function MemoryMap({
         leafletRef.current = L;
 
         // Initialize Leaflet Map
+        // On phones one finger scrolls the page; the map moves with two (pinch) instead.
+        const touch = L.Browser.mobile;
+        const start = propsRef.current.start;
         const map = L.map(containerRef.current, {
-          center: [20, 0],
-          zoom: 2,
+          center: start ? [start.lat, start.lng] : [20, 0],
+          zoom: start?.zoom ?? 2,
           minZoom: 2,
           maxZoom: 18,
+          dragging: !touch,
         });
+        if (touch) setTouchHint(true);
         mapRef.current = map;
 
         // Standard OpenStreetMap tiles (100% free, no watermark, no API key required)
@@ -209,10 +218,16 @@ export function MemoryMap({
 
   return (
     <div
-      ref={containerRef}
-      className={className ?? "h-80 w-full rounded-xl"}
+      className={`relative ${className ?? "h-80 w-full rounded-xl"}`}
       // Leaflet stacks its layers up to z-index 1000; isolate them so menus stay on top.
       style={{ minHeight: "260px", isolation: "isolate" }}
-    />
+    >
+      <div ref={containerRef} className="absolute inset-0" />
+      {touchHint && (
+        <span className="pointer-events-none absolute bottom-2 left-1/2 z-[1000] -translate-x-1/2 rounded-full bg-foreground/70 px-3 py-1 text-[11px] text-background">
+          Usa dois dedos para mover o mapa
+        </span>
+      )}
+    </div>
   );
 }

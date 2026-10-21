@@ -40,16 +40,19 @@ function Diary() {
   const countries = [...new Set(all.map((m) => countryOf(m.place)))].sort();
   const years = [...new Set(all.map((m) => m.date.slice(0, 4)))].sort().reverse();
   const trips = tripNames(all);
+  const filtering = !!(q || country || year || trip);
   const shown = useMemo(
     () =>
       all.filter(
-        (m) =>
+        (m, i) =>
+          // The newest memory is already the big feature above, unless the person is searching.
+          (filtering || i > 0) &&
           (!country || countryOf(m.place) === country) &&
           (!year || m.date.startsWith(year)) &&
           (!trip || m.trip?.trim() === trip) &&
           (!q || `${m.title} ${m.place} ${m.text}`.toLowerCase().includes(q.toLowerCase())),
       ),
-    [all, q, country, year, trip],
+    [all, filtering, q, country, year, trip],
   );
   const today = onThisDay(all);
   const first = today[0];
@@ -146,7 +149,7 @@ function Diary() {
             .
           </p>
         )}
-        {all.length > 0 && shown.length === 0 && (
+        {filtering && shown.length === 0 && (
           <p className="py-10 text-muted-foreground">Nada encontrado com estes filtros.</p>
         )}
         <div className="columns-1 gap-6 sm:columns-2 lg:columns-3">

@@ -17,6 +17,8 @@ import { errorMessage } from "@/lib/errors";
 const field =
   "mt-1 w-full rounded-md border border-input bg-card px-3 py-2 outline-none focus:ring-2 focus:ring-ring";
 
+const PORTUGAL = { lat: 39.6, lng: -8.0, zoom: 6 };
+
 type Prefill = { place: string; lat?: number | undefined; lng?: number | undefined };
 
 export function MemoryForm({
@@ -134,7 +136,10 @@ export function MemoryForm({
   }
 
   return (
-    <form onSubmit={submit} className="mx-auto grid max-w-6xl gap-10 px-6 pb-24 md:grid-cols-2">
+    <form
+      onSubmit={submit}
+      className="mx-auto grid max-w-6xl gap-x-10 gap-y-8 px-6 pb-24 md:grid-cols-2"
+    >
       <div className="space-y-5">
         <h1 className="text-5xl">
           {initial ? "Editar" : "Nova"} <em className="text-primary">memória</em>
@@ -246,12 +251,6 @@ export function MemoryForm({
             </div>
           )}
         </div>
-        <button
-          disabled={save.isPending || uploading > 0}
-          className="rounded-full bg-primary px-6 py-3 text-primary-foreground hover:opacity-90 disabled:opacity-50"
-        >
-          {save.isPending ? "A guardar…" : "Guardar memória"}
-        </button>
       </div>
       <div>
         <p className="text-sm">
@@ -265,10 +264,20 @@ export function MemoryForm({
             <MemoryMap
               picked={pos}
               onPick={(lat, lng) => setPos({ lat, lng })}
-              className="h-[60vh] w-full bg-muted"
+              start={PORTUGAL}
+              className="h-[45vh] w-full bg-muted md:h-[60vh]"
             />
           </ClientOnly>
         </div>
+      </div>
+      {/* After the map on phones, so the place is checked before saving. */}
+      <div className="md:col-span-2">
+        <button
+          disabled={save.isPending || uploading > 0}
+          className="w-full rounded-full bg-primary px-6 py-3 text-primary-foreground hover:opacity-90 disabled:opacity-50 md:w-auto"
+        >
+          {save.isPending ? "A guardar…" : "Guardar memória"}
+        </button>
       </div>
     </form>
   );

@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -45,7 +45,7 @@ const tabs = shown([
   { to: "/planeador", label: "Planos", icon: CalendarDays, on: features.planner },
   { to: "/diario", label: "Diário", icon: BookOpen, on: true },
   { to: "/mapa", label: "Mapa", icon: Map, on: true },
-  { to: "/passaporte", label: "Carimbos", icon: Globe, on: true },
+  { to: "/passaporte", label: "Passaporte", icon: Globe, on: true },
   { to: "/album", label: "Álbum", icon: BookImage, on: true },
 ]).slice(0, 4);
 const moreLinks = links.filter((l) => !tabs.some((t) => t.to === l.to));
@@ -96,6 +96,9 @@ export function SiteHeader() {
     ));
 
   const tab = "flex flex-1 flex-col items-center gap-0.5 py-2 text-[11px] text-muted-foreground";
+  // While writing a memory the "+" would only start another one.
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const writing = pathname === "/nova" || pathname.endsWith("/editar");
 
   return (
     <>
@@ -129,12 +132,14 @@ export function SiteHeader() {
               <span>Backup</span>
             </button>
             {account}
-            <Link
-              to="/nova"
-              className="rounded-full bg-primary px-4 py-2 text-sm text-primary-foreground shadow-md hover:opacity-90"
-            >
-              + Nova memória
-            </Link>
+            {!writing && (
+              <Link
+                to="/nova"
+                className="rounded-full bg-primary px-4 py-2 text-sm text-primary-foreground shadow-md hover:opacity-90"
+              >
+                + Nova memória
+              </Link>
+            )}
           </nav>
 
           <div className="flex items-center gap-3 md:hidden">
@@ -177,11 +182,15 @@ export function SiteHeader() {
             <span>{t.label}</span>
           </Link>
         ))}
-        <Link to="/nova" aria-label="Nova memória" className="-mt-6 flex flex-1 justify-center">
-          <span className="grid h-14 w-14 place-items-center rounded-full bg-primary text-primary-foreground shadow-lg ring-4 ring-background">
-            <Plus className="h-7 w-7" />
-          </span>
-        </Link>
+        {writing ? (
+          <span className="flex-1" aria-hidden />
+        ) : (
+          <Link to="/nova" aria-label="Nova memória" className="-mt-6 flex flex-1 justify-center">
+            <span className="grid h-14 w-14 place-items-center rounded-full bg-primary text-primary-foreground shadow-lg ring-4 ring-background">
+              <Plus className="h-7 w-7" />
+            </span>
+          </Link>
+        )}
         {tabs.slice(2).map((t) => (
           <Link
             key={t.to}

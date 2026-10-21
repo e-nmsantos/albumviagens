@@ -137,16 +137,17 @@ export function onThisDay<T extends { date: string }>(ms: T[], today = new Date(
   );
 }
 
-/** Group memories by year (newest first), each year's memories oldest→newest. */
-export function byYear<T extends { date: string }>(ms: T[]) {
+/** Group memories by year; `newestFirst` orders both the years and the memories inside them. */
+export function byYear<T extends { date: string }>(ms: T[], newestFirst = true) {
+  const dir = newestFirst ? -1 : 1;
   const map = new Map<string, T[]>();
   [...ms]
-    .sort((a, b) => a.date.localeCompare(b.date))
+    .sort((a, b) => dir * a.date.localeCompare(b.date))
     .forEach((m) => {
       const y = m.date.slice(0, 4);
       map.set(y, [...(map.get(y) ?? []), m]);
     });
-  return [...map.entries()].sort((a, b) => b[0].localeCompare(a[0]));
+  return [...map.entries()].sort((a, b) => dir * a[0].localeCompare(b[0]));
 }
 
 /** Distinct trip names, in the order they first appear. */

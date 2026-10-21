@@ -1,4 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
+import { ArrowDownUp } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { byYear, formatDate, useMemories } from "@/lib/memories";
 import { usePhotoUrls } from "@/lib/photos";
@@ -18,14 +20,27 @@ export const Route = createFileRoute("/_authenticated/linha-do-tempo")({
 function Timeline() {
   const { data: ms = [] } = useMemories();
   const urls = usePhotoUrls(ms.map((m) => m.photos[0]));
-  const years = byYear(ms);
+  // Newest first, like the diary; the button flips it.
+  const [newestFirst, setNewestFirst] = useState(true);
+  const years = byYear(ms, newestFirst);
   return (
     <div className="min-h-screen pb-28">
       <SiteHeader />
       <main className="mx-auto max-w-4xl px-6">
-        <h1 className="text-5xl md:text-6xl">
-          A linha do <em className="text-primary">tempo</em>
-        </h1>
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <h1 className="text-5xl md:text-6xl">
+            A linha do <em className="text-primary">tempo</em>
+          </h1>
+          {ms.length > 1 && (
+            <button
+              onClick={() => setNewestFirst((v) => !v)}
+              className="inline-flex items-center gap-2 rounded-full border border-input bg-card px-4 py-2 text-sm hover:bg-secondary"
+            >
+              <ArrowDownUp className="h-4 w-4 text-primary" />
+              {newestFirst ? "Mais recentes primeiro" : "Mais antigas primeiro"}
+            </button>
+          )}
+        </div>
         {ms.length === 0 && <p className="mt-10 text-muted-foreground">Ainda não há memórias.</p>}
         {years.map(([y, list]) => (
           <section key={y} className="relative mt-14">

@@ -32,6 +32,10 @@ function MapPage() {
   const trips = tripNames(items);
   const shown = trip ? items.filter((m) => m.trip?.trim() === trip) : items;
   const count = shown.filter((m) => m.lat != null).length;
+  // A route line is only drawn for trips with at least two places on the map.
+  const hasRoutes = tripNames(shown).some(
+    (t) => shown.filter((m) => m.trip?.trim() === t && m.lat != null && m.lng != null).length > 1,
+  );
   return (
     <div className="min-h-screen">
       <SiteHeader />
@@ -43,8 +47,9 @@ function MapPage() {
             </h1>
             <p className="mt-2 text-muted-foreground">
               {plural(count, "lugar marcado", "lugares marcados")}. Toca num ponto para abrir a
-              memória. As linhas mostram o percurso de cada viagem
-              {features.wishes && "; os pontos verdes são lugares que queres visitar"}.
+              memória.
+              {hasRoutes && " As linhas ligam os lugares de cada viagem, por ordem de data."}
+              {features.wishes && " Os pontos verdes são lugares que queres visitar."}
             </p>
             {features.wishes && (
               <label className="mt-3 inline-flex items-center gap-2 text-sm">
@@ -72,12 +77,12 @@ function MapPage() {
           )}
         </div>
         <div className="polaroid mt-8">
-          <ClientOnly fallback={<div className="h-[70vh] bg-muted" />}>
+          <ClientOnly fallback={<div className="h-[55vh] bg-muted md:h-[70vh]" />}>
             <MemoryMap
               memories={shown}
               wishes={showWishes ? wishes.filter((w) => !w.done) : []}
               showRoutes
-              className="h-[70vh] w-full bg-muted"
+              className="h-[55vh] w-full bg-muted md:h-[70vh]"
               onSelect={(id) => nav({ to: "/memoria/$id", params: { id } })}
             />
           </ClientOnly>

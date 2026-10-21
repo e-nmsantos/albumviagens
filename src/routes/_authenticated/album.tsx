@@ -140,6 +140,8 @@ function Album() {
     ro.observe(box.current);
     return () => ro.disconnect();
   }, [w, hasPages]);
+  // Phones: one page per screen; tapping opens it full screen, turned sideways.
+  const [viewing, setViewing] = useState<number | null>(null);
 
   return (
     <div className="min-h-screen pb-28 print:p-0">
@@ -239,12 +241,37 @@ function Album() {
 
       {ms.length > 0 && (
         <div ref={box} className="mx-auto mt-8 max-w-5xl px-6 print:m-0 print:max-w-none print:p-0">
-          <div className="album-book space-y-8 print:space-y-0" style={{ zoom }}>
+          <div
+            className="album-book hidden space-y-8 md:block print:block print:space-y-0"
+            style={{ zoom }}
+          >
             {pages.map((p, i) => (
               <Sheet key={i} n={i + 1} book={book} page={p} />
             ))}
           </div>
+          <div className="-mx-6 flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-4 md:hidden print:hidden">
+            {pages.map((p, i) => (
+              <button
+                key={i}
+                onClick={() => setViewing(i)}
+                className="relative shrink-0 snap-center text-left"
+                aria-label={`Abrir a página ${i + 1} em ecrã inteiro`}
+              >
+                <div style={{ zoom }}>
+                  <Sheet n={i + 1} book={book} page={p} />
+                </div>
+                <span className="mt-2 block text-center text-xs text-muted-foreground">
+                  Página {i + 1} de {pages.length} · toca para ampliar
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
+      )}
+      {viewing !== null && pages[viewing] && (
+        <PageViewer index={viewing} total={pages.length} onChange={setViewing} size={{ w, h }}>
+          <Sheet n={viewing + 1} book={book} page={pages[viewing]} />
+        </PageViewer>
       )}
     </div>
   );
@@ -260,6 +287,70 @@ type Book = {
   w: number;
   h: number;
 };
+
+/** One album page full screen, turned sideways to use the whole phone. */
+function PageViewer({
+  index,
+  total,
+  onChange,
+  size,
+  children,
+}: {
+  index: number;
+  total: number;
+  onChange: (i: number | null) => void;
+  size: { w: number; h: number };
+  children: ReactNode;
+}) {
+  const [vp, setVp] = useState({ w: 390, h: 844 });
+  useLayoutEffect(() => {
+    const read = () => setVp({ w: window.innerWidth, h: window.innerHeight });
+    read();
+    window.addEventListener("resize", read);
+    return () => window.removeEventListener("resize", read);
+  }, []);
+  const px = 3.7795; // pixels per millimetre
+  const sideways = vp.h > vp.w;
+  const [pw, ph] = sideways ? [vp.h - 96, vp.w - 24] : [vp.w - 24, vp.h - 96];
+  const scale = Math.min(pw / (size.w * px), ph / (size.h * px));
+  const btn = "rounded-full bg-background/15 px-4 py-2 text-sm text-background disabled:opacity-30";
+
+  return (
+    <div
+      className="fixed inset-0 z-[60] bg-foreground/95 print:hidden"
+      role="dialog"
+      aria-label="Página do álbum"
+    >
+      <div
+        className="absolute left-1/2 top-1/2"
+        style={{
+          width: `${size.w}mm`,
+          transform: `translate(-50%, -50%) ${sideways ? "rotate(90deg)" : ""} scale(${scale})`,
+        }}
+      >
+        {children}
+      </div>
+      <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-2 p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+        <button className={btn} disabled={index === 0} onClick={() => onChange(index - 1)}>
+          ‹ Anterior
+        </button>
+        <span className="text-xs text-background/70">
+          {index + 1} / {total}
+        </span>
+        <button className={btn} disabled={index === total - 1} onClick={() => onChange(index + 1)}>
+          Seguinte ›
+        </button>
+      </div>
+      <button
+        onClick={() => onChange(null)}
+        aria-label="Fechar"
+        className="absolute right-4 top-4 rounded-full bg-background/15 px-3 py-1 text-2xl text-background"
+      >
+        ×
+      </button>
+    </div>
+  );
+}
 
 function Sheet({ n, book, page }: { n: number; book: Book; page: Page }) {
   const showFolio = page.kind === "memory" || page.kind === "gallery" || page.kind === "contents";
