@@ -1,7 +1,6 @@
 import { defineConfig, loadEnv } from "vite";
 import tailwindcss from "@tailwindcss/vite";
 import viteReact from "@vitejs/plugin-react";
-import tsConfigPaths from "vite-tsconfig-paths";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import { nitro } from "nitro/vite";
 
@@ -15,11 +14,11 @@ export default defineConfig(({ command, mode }) => {
     // The detailed world map (~780 kB, keeps small countries) is its own lazily loaded chunk.
     build: { chunkSizeWarningLimit: 800 },
     resolve: {
+      tsconfigPaths: true, // the "@/…" imports from tsconfig.json
       dedupe: ["react", "react-dom", "@tanstack/react-query", "@tanstack/query-core"],
     },
     plugins: [
       tailwindcss(),
-      tsConfigPaths({ projects: ["./tsconfig.json"] }),
       tanstackStart({
         // src/server.ts wraps the server entry with an error page for crashed renders.
         server: { entry: "server" },
