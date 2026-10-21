@@ -6,9 +6,9 @@ import { useMemories } from "@/lib/memories";
 export const Route = createFileRoute("/_authenticated/memoria/$id_/editar")({
   head: () => ({
     meta: [
-      { title: "Editar memória — Memórias" },
+      { title: "Editar memória — Fica na Memória" },
       { name: "description", content: "Altera o texto, as fotos ou o lugar de uma memória." },
-      { property: "og:title", content: "Editar memória — Memórias" },
+      { property: "og:title", content: "Editar memória — Fica na Memória" },
       { property: "og:description", content: "Altera uma memória de viagem." },
     ],
   }),

@@ -10,12 +10,12 @@ import { features } from "@/lib/features";
 export const Route = createFileRoute("/_authenticated/mapa")({
   head: () => ({
     meta: [
-      { title: "Mapa de viagens — Memórias" },
+      { title: "Mapa de viagens — Fica na Memória" },
       {
         name: "description",
         content: "Todos os lugares por onde passou, num só mapa, com o percurso de cada viagem.",
       },
-      { property: "og:title", content: "Mapa de viagens — Memórias" },
+      { property: "og:title", content: "Mapa de viagens — Fica na Memória" },
       { property: "og:description", content: "Todos os lugares por onde passou, num só mapa." },
     ],
   }),

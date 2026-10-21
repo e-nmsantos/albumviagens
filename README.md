@@ -1,4 +1,4 @@
-# Memórias — diário e planeador de viagens
+# Fica na Memória — diário e planeador de viagens
 
 Diário de viagens com fotos, mapa, passaporte de carimbos, linha do tempo, lista de desejos,
 álbum para imprimir e um planeador (roteiro, reservas, orçamento, mala).

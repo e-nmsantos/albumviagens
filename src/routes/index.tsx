@@ -32,7 +32,7 @@ export const Route = createFileRoute("/")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Memórias — diário e planeador de viagens" },
+      { title: "Fica na Memória — diário e planeador de viagens" },
       {
         name: "description",
         content:

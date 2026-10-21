@@ -8,9 +8,9 @@ import { usePhotoUrls } from "@/lib/photos";
 export const Route = createFileRoute("/_authenticated/linha-do-tempo")({
   head: () => ({
     meta: [
-      { title: "Linha do tempo — Memórias" },
+      { title: "Linha do tempo — Fica na Memória" },
       { name: "description", content: "Todas as memórias de viagem, ano a ano." },
-      { property: "og:title", content: "Linha do tempo — Memórias" },
+      { property: "og:title", content: "Linha do tempo — Fica na Memória" },
       { property: "og:description", content: "Todas as memórias de viagem, ano a ano." },
     ],
   }),

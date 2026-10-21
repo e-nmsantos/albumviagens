@@ -117,7 +117,7 @@ body {
     radial-gradient(circle at 85% 30%, oklch(0.72 0.055 165 / 0.1), transparent 45%);
   background-attachment: fixed;
 }
-@media (max-width: 767px) {
+@media (max-width: 1023px) {
   body {
     padding-bottom: 5rem;
   }

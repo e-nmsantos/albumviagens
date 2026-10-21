@@ -16,9 +16,9 @@ import { plural } from "@/lib/utils";
 export const Route = createFileRoute("/_authenticated/diario")({
   head: () => ({
     meta: [
-      { title: "O meu diário — Memórias" },
+      { title: "O meu diário — Fica na Memória" },
       { name: "description", content: "Todas as tuas memórias de viagem num mosaico de fotos." },
-      { property: "og:title", content: "O meu diário — Memórias" },
+      { property: "og:title", content: "O meu diário — Fica na Memória" },
       { property: "og:description", content: "Todas as tuas memórias de viagem." },
     ],
   }),

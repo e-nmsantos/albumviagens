@@ -222,7 +222,7 @@ export function BackCover({ ctx }: { ctx: BookContext }) {
           color: dark ? "#eef3f6" : undefined,
         }}
       >
-        <p className="font-display text-[14pt] italic opacity-90">Memórias</p>
+        <p className="font-display text-[14pt] italic opacity-90">Fica na Memória</p>
         <p className="mt-[2mm] text-[7pt] uppercase tracking-[0.4em] opacity-70">{span}</p>
       </div>
     </Sheet>

@@ -61,7 +61,7 @@ export async function buildBackup(
 export function parseBackup(json: unknown): Backup {
   const b = json as Partial<Backup> | null;
   if (!b || typeof b !== "object" || !Array.isArray(b.memories)) {
-    throw new Error("Este ficheiro não é uma cópia de segurança das Memórias.");
+    throw new Error("Este ficheiro não é uma cópia de segurança da app Fica na Memória.");
   }
   const memories = b.memories.filter(
     (m): m is Memory => !!m && typeof m.title === "string" && typeof m.date === "string",

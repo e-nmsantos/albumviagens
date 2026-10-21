@@ -19,12 +19,12 @@ export const Route = createFileRoute("/_authenticated/desejos")({
   },
   head: () => ({
     meta: [
-      { title: "Lista de desejos — Memórias" },
+      { title: "Lista de desejos — Fica na Memória" },
       {
         name: "description",
         content: "Os lugares que queres visitar um dia, num globo e no mapa.",
       },
-      { property: "og:title", content: "Lista de desejos — Memórias" },
+      { property: "og:title", content: "Lista de desejos — Fica na Memória" },
       { property: "og:description", content: "Os lugares que queres visitar um dia." },
     ],
   }),

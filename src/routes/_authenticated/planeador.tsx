@@ -40,7 +40,7 @@ export const Route = createFileRoute("/_authenticated/planeador")({
   validateSearch: z.object({ trip: z.string().optional() }),
   head: () => ({
     meta: [
-      { title: "Planeador de viagens — Memórias" },
+      { title: "Planeador de viagens — Fica na Memória" },
       {
         name: "description",
         content: "Itinerários dia a dia, reservas, despesas, mala e mapa de cada viagem.",

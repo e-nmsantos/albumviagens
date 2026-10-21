@@ -1,6 +1,6 @@
 {
-  "name": "Memórias — diário de viagens",
-  "short_name": "Memórias",
+  "name": "Fica na Memória — diário de viagens",
+  "short_name": "Fica na Memória",
   "start_url": "/diario",
   "display": "standalone",
   "background_color": "#f3f8fa",

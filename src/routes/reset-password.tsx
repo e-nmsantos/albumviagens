@@ -6,9 +6,9 @@ import { supabase } from "@/lib/supabase";
 export const Route = createFileRoute("/reset-password")({
   head: () => ({
     meta: [
-      { title: "Nova palavra-passe — Memórias" },
+      { title: "Nova palavra-passe — Fica na Memória" },
       { name: "description", content: "Escolhe uma nova palavra-passe para o teu diário." },
-      { property: "og:title", content: "Nova palavra-passe — Memórias" },
+      { property: "og:title", content: "Nova palavra-passe — Fica na Memória" },
       { property: "og:description", content: "Escolhe uma nova palavra-passe." },
     ],
   }),

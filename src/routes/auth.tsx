@@ -9,12 +9,12 @@ export const Route = createFileRoute("/auth")({
   validateSearch: z.object({ redirect: z.string().optional() }),
   head: () => ({
     meta: [
-      { title: "Entrar — Memórias" },
+      { title: "Entrar — Fica na Memória" },
       {
         name: "description",
         content: "Entra ou cria conta para guardares as tuas memórias de viagem.",
       },
-      { property: "og:title", content: "Entrar — Memórias" },
+      { property: "og:title", content: "Entrar — Fica na Memória" },
       { property: "og:description", content: "Entra ou cria conta no teu diário de viagens." },
     ],
   }),
@@ -85,7 +85,7 @@ function AuthPage() {
   return (
     <div className="flex min-h-screen items-center justify-center px-6">
       <div className="w-full max-w-sm">
-        <h1 className="text-center font-display text-5xl italic">Memórias</h1>
+        <h1 className="text-center font-display text-5xl italic">Fica na Memória</h1>
         <p className="mt-2 text-center text-muted-foreground">
           {mode === "in"
             ? "Olá outra vez."

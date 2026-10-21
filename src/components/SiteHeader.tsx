@@ -8,10 +8,8 @@ import {
   BookOpen,
   CalendarDays,
   Clock,
-  Cloud,
   Compass,
   Globe,
-  HardDrive,
   LogIn,
   LogOut,
   Map,
@@ -69,29 +67,17 @@ export function SiteHeader() {
     nav({ to: HOME, replace: true });
   }
 
-  const mode = ready && (
-    <span
-      title={
-        user ? `Dados na nuvem (${user.email ?? "conta"})` : "Dados guardados só neste navegador"
-      }
-      className="inline-flex items-center gap-1 rounded-full bg-secondary px-2 py-0.5 text-[11px] text-muted-foreground"
-    >
-      {user ? <Cloud className="h-3 w-3" /> : <HardDrive className="h-3 w-3" />}
-      {user ? "Na nuvem" : "Neste dispositivo"}
-    </span>
-  );
-
   const account =
     ready &&
     (user ? (
       <button onClick={signOut} className={link} title={`Sair (${user.email ?? ""})`}>
-        <span className="hidden md:inline">Sair</span>
-        <LogOut className="h-5 w-5 md:hidden" />
+        <span className="hidden lg:inline">Sair</span>
+        <LogOut className="h-5 w-5 lg:hidden" />
       </button>
     ) : (
       <Link to="/auth" className={link} title="Entrar numa conta">
-        <span className="hidden md:inline">Entrar</span>
-        <LogIn className="h-5 w-5 md:hidden" />
+        <span className="hidden lg:inline">Entrar</span>
+        <LogIn className="h-5 w-5 lg:hidden" />
       </Link>
     ));
 
@@ -105,13 +91,12 @@ export function SiteHeader() {
       <header className="sticky top-0 z-30 border-b border-border/60 bg-background/85 backdrop-blur print:hidden">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
           <Link to={HOME} className="group flex items-center gap-2">
-            <span className="font-display text-3xl italic text-foreground transition-colors group-hover:text-primary">
-              Memórias
+            <span className="whitespace-nowrap font-display text-3xl italic text-foreground transition-colors group-hover:text-primary">
+              Fica na Memória
             </span>
-            <span className="hidden sm:inline-flex">{mode}</span>
           </Link>
 
-          <nav className="hidden items-center gap-4 md:flex lg:gap-5">
+          <nav className="hidden items-center gap-4 lg:flex xl:gap-5">
             {links.map((l) => (
               <Link
                 key={l.to}
@@ -135,14 +120,14 @@ export function SiteHeader() {
             {!writing && (
               <Link
                 to="/nova"
-                className="rounded-full bg-primary px-4 py-2 text-sm text-primary-foreground shadow-md hover:opacity-90"
+                className="whitespace-nowrap rounded-full bg-primary px-4 py-2 text-sm text-primary-foreground shadow-md hover:opacity-90"
               >
                 + Nova memória
               </Link>
             )}
           </nav>
 
-          <div className="flex items-center gap-3 md:hidden">
+          <div className="flex items-center gap-3 lg:hidden">
             <button
               onClick={() => setShowBackup(true)}
               aria-label="Cópia de segurança"
@@ -154,7 +139,7 @@ export function SiteHeader() {
           </div>
         </div>
         {/* Secondary pages on mobile: a scrollable row under the header. */}
-        <nav className="flex gap-2 overflow-x-auto px-6 pb-3 md:hidden">
+        <nav className="flex gap-2 overflow-x-auto px-6 pb-3 lg:hidden">
           {moreLinks.map((l) => (
             <Link
               key={l.to}
@@ -169,7 +154,7 @@ export function SiteHeader() {
         </nav>
       </header>
 
-      <nav className="fixed inset-x-0 bottom-0 z-40 flex items-end border-t border-border bg-card/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden print:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-40 flex items-end border-t border-border bg-card/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden print:hidden">
         {tabs.slice(0, 2).map((t) => (
           <Link
             key={t.to}

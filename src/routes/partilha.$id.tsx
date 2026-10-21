@@ -9,9 +9,9 @@ import { usePhotoUrls } from "@/lib/photos";
 export const Route = createFileRoute("/partilha/$id")({
   head: () => ({
     meta: [
-      { title: "Uma memória de viagem — Memórias" },
+      { title: "Uma memória de viagem — Fica na Memória" },
       { name: "description", content: "Alguém partilhou contigo uma memória de viagem." },
-      { property: "og:title", content: "Uma memória de viagem — Memórias" },
+      { property: "og:title", content: "Uma memória de viagem — Fica na Memória" },
       { property: "og:description", content: "Alguém partilhou contigo uma memória de viagem." },
     ],
   }),
@@ -48,7 +48,7 @@ function Shared() {
     <div className="min-h-screen">
       <header className="mx-auto flex max-w-3xl items-center justify-between px-6 py-6">
         <Link to="/" className="font-display text-3xl italic">
-          Memórias
+          Fica na Memória
         </Link>
         <Link to="/auth" className="text-sm text-muted-foreground hover:text-foreground">
           Criar o meu diário

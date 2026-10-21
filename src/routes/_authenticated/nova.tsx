@@ -6,9 +6,9 @@ import { MemoryForm } from "@/components/MemoryForm";
 export const Route = createFileRoute("/_authenticated/nova")({
   head: () => ({
     meta: [
-      { title: "Nova memória — Memórias" },
+      { title: "Nova memória — Fica na Memória" },
       { name: "description", content: "Regista uma nova memória com fotos, texto e lugar." },
-      { property: "og:title", content: "Nova memória — Memórias" },
+      { property: "og:title", content: "Nova memória — Fica na Memória" },
       { property: "og:description", content: "Regista uma nova memória de viagem." },
     ],
   }),

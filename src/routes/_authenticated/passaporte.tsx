@@ -15,7 +15,7 @@ export const Route = createFileRoute("/_authenticated/passaporte")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Passaporte de viagens — Memórias" },
+      { title: "Passaporte de viagens — Fica na Memória" },
       {
         name: "description",
         content: "O teu passaporte com um carimbo por cada lugar onde guardaste uma memória.",

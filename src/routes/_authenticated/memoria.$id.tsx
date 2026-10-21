@@ -10,9 +10,9 @@ import { usePhotoUrls } from "@/lib/photos";
 export const Route = createFileRoute("/_authenticated/memoria/$id")({
   head: () => ({
     meta: [
-      { title: "Memória de viagem — Memórias" },
+      { title: "Memória de viagem — Fica na Memória" },
       { name: "description", content: "Uma memória de viagem com fotos e histórias." },
-      { property: "og:title", content: "Memória de viagem — Memórias" },
+      { property: "og:title", content: "Memória de viagem — Fica na Memória" },
       { property: "og:description", content: "Uma memória de viagem com fotos e histórias." },
     ],
   }),

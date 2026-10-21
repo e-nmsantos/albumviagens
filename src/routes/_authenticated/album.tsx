@@ -33,7 +33,7 @@ import { plural } from "@/lib/utils";
 export const Route = createFileRoute("/_authenticated/album")({
   head: () => ({
     meta: [
-      { title: "Álbum fotográfico — Memórias" },
+      { title: "Álbum fotográfico — Fica na Memória" },
       {
         name: "description",
         content:

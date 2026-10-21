@@ -8,12 +8,12 @@ import { plural } from "@/lib/utils";
 export const Route = createFileRoute("/_authenticated/estatisticas")({
   head: () => ({
     meta: [
-      { title: "As minhas viagens em números — Memórias" },
+      { title: "As minhas viagens em números — Fica na Memória" },
       {
         name: "description",
         content: "Países visitados, quilómetros percorridos e anos de viagem.",
       },
-      { property: "og:title", content: "As minhas viagens em números — Memórias" },
+      { property: "og:title", content: "As minhas viagens em números — Fica na Memória" },
       { property: "og:description", content: "Países visitados e quilómetros percorridos." },
     ],
   }),
